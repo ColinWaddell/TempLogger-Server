@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 db.sqlite3
-static/
 log/migrations/
 
 # C extensions

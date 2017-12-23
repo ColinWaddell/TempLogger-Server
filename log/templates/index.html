@@ -93,6 +93,7 @@
 
             chart.yAxis
                 .axisLabel('Temperature (°C)')
+                .ticks(10)
                 .tickFormat(function(d) { 
                     return d.toFixed(2) + "°C";
                 });

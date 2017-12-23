@@ -58,6 +58,9 @@
                     return d.toFixed(2) + "C";
                 });
 
+            chart.forceY([10, 30]);
+            chart.interpolate("basis");
+
             d3.select('#chart1 svg')
                 .attr('perserveAspectRatio', 'xMinYMid')
                 .attr('width', width)

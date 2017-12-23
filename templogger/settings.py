@@ -25,7 +25,7 @@ SECRET_KEY = 'ydaufvcq!bme#e(=sa54@w=*mzh@o80cec-kueb5nk7(-7-ecf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['warmpi.colinwaddell.com']
 
 
 # Application definition

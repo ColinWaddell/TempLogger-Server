@@ -10,7 +10,7 @@ from .utilities import max_weeks
 def index(request, weeks_ago=0):
     weeks = {
         "ago": weeks_ago,
-        "max": max_weeks()
+        "max": range(1, max_weeks() + 1)
     }
     return render(request, 'index.html', {"weeks": weeks})
 

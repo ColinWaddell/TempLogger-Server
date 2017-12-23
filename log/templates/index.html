@@ -10,7 +10,7 @@
     <title>Temperature Log</title>
     
     <style>
-        text {
+        p, text {
             font: 12px sans-serif;
         }
         svg {
@@ -19,13 +19,27 @@
         html, body, #chart1, svg {
             margin: 0px;
             padding: 0px;
-            height: 100%;
+            height: 95%;
             width: 100%;
         }
         #chartZoom {
             position: absolute;
             top: 0;
             left: 0;
+        }
+
+        #pages {
+            padding-left: 20px;
+        }
+
+        a.week{
+            padding-right: 10px;
+            text-decoration: none;
+            color: cornflowerblue;
+        }
+
+        a.week.strong{
+            font-weight: bolder;
         }
     </style>
 </head>
@@ -34,6 +48,31 @@
 <div id="chart1" class='with-transitions'>
     <svg></svg>
 </div>
+
+{% if weeks.max %}
+<div id="pages">
+    <p>
+        <a 
+            href="" 
+            class="
+                week
+            {% if weeks.ago == 0 %}
+                strong
+            {% endif %}
+            ">This week </a>
+        {% for week in weeks.max %}
+            <a 
+                href=""
+                class="
+                    week
+                {% if week == weeks.ago %}
+                    strong
+                {% endif %}
+                ">-{{ week }}</a>
+        {% endfor %}
+    </p>
+</div>
+{% endif %}
 
 <script>
 
@@ -59,7 +98,7 @@
                 });
 
             chart.forceY([10, 30]);
-            chart.interpolate("cardinal");
+            chart.interpolate("monotone");
 
             d3.select('#chart1 svg')
                 .attr('perserveAspectRatio', 'xMinYMid')

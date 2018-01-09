@@ -98,8 +98,8 @@
                     return d.toFixed(2) + "°C";
                 });
 
-            chart.forceY([10, 30]);
-            chart.interpolate("step-before");
+            chart.forceY([15, 25]);
+            chart.interpolate("monotone");
 
             d3.select('#chart1 svg')
                 .attr('perserveAspectRatio', 'xMinYMid')
@@ -122,7 +122,6 @@
 
                 d3.select('#chart1 svg')
                     .attr('viewBox', '0 0 ' + w + ' ' + h)
-                    .transition().duration(500)
                     .call(chart);
             }
 

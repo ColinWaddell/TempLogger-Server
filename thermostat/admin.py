@@ -12,7 +12,7 @@ class ProgramAdmin(admin.ModelAdmin):
     formfield_overrides = {
         ProgramAction: {'day': CheckboxSelectMultiple},
     }
-    readonly_fields = ('active', )
+    # readonly_fields = ('active', )
 
 
 class ThermostatSensorsinline(admin.TabularInline):

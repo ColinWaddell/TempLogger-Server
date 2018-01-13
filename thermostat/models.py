@@ -92,15 +92,18 @@ class Thermostat(models.Model):
         self.save()
 
     def too_warm(self):
+        print ("too warm" if self.get_temperature() > self.target else "too cold")
         return self.get_temperature() > self.target
 
     def switch_on(self):
+        print("switch on")
         device = devices.HANDLERS[self.device]()
         device.switch_on()
         self.on = True
         self.save()
 
     def switch_off(self):
+        print("switch off")
         dev = devices.HANDLERS[self.device]()
         dev.switch_off()
         self.on = False

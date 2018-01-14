@@ -5,6 +5,4 @@ class Command(BaseCommand):
     help = 'Test all the thermostats status'
 
     def handle(self, *args, **options):
-        thermostats = Thermostat.objects.all()
-        for thermostat in thermostats:
-            thermostat.update()
+        _ = [thermostats.update() for thermostats in Thermostat.objects.all()]

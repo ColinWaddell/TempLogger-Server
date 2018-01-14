@@ -1,5 +1,5 @@
 {% load static %}
-
+{% if not noscript %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +7,33 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
+    <script>
+      var x  = 0;
+      var reload_bg = function(){ 
+        var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+        var request = $.ajax({
+          url: root + '/thermostat/noscript',
+          dataType: "html"
+        })
+        .done(
+          function(data) {
+            $("body").html(data);
+            x = x + 1;
+            console.log(x)
+          }
+        )
+        setTimeout(reload_bg, 1000)
+      }
+      setTimeout(reload_bg, 1000)
+      </script>
 </head>
 <body>
-
+{% endif %}
     <nav class="navbar navbar-default">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-            <a class="navbar-brand" href="#">WarmPi</a>
+            <a class="navbar-brand" href="{% url 'thermostat:index' %}">WarmPi</a>
           </div>
         </div><!-- /.container-fluid -->
       </nav>
@@ -55,7 +74,7 @@
                     <li class="list-group-item">
                       <div class="row">
                         <div class="col-sm-2">
-                          <h4>Mode</h4>
+                          <h4>Mode:</h4>
                         </div>
                         <div class="col-sm-10 text-right">
                           <div class="btn-group" role="group" aria-label="Available Modes">
@@ -76,7 +95,7 @@
                     <li class="list-group-item">
                       <div class="row">
                         <div class="col-sm-4">
-                          <h4>Target</h4>
+                          <h4>Target:</h4>
                         </div>
                         <di class="col-sm-8">
                           <div class="input-group">
@@ -186,11 +205,11 @@
                     {% if thermostat.programmed %}
                     <li class="list-group-item">
                         <h4>
-                          Program Running: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;
+                          Timer: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;
                           {% if thermostat.program.active %}
-                            <span class="glyphicon glyphicon-play text-muted" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                           {% else %}
-                            <span class="glyphicon glyphicon-pause text-muted" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                           {% endif %}
                         </h4>
                         <table class="table table-condensed table-striped table-bordered">
@@ -218,10 +237,13 @@
                       </li>
                       {% endif %}
                   </ul>
+                  <div class="panel-footer"><b>Updated: </b>{% now "jS F - H:i:s" %}</div>
               </div>
           </div>
         </div>
       {% endfor %}
     </div>
+{% if not noscript %}
 </body>
 </html>
+{% endif %}

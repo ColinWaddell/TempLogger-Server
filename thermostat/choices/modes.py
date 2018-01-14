@@ -3,7 +3,7 @@ from datetime import time
 
 ALWAYS_OFF = "Always off"
 ALWAYS_THERMO = "Just the thermostat"
-PROGRAM = "Run a program"
+PROGRAM = "Timer Program"
 
 CHOICES = [
     (ALWAYS_OFF, ALWAYS_OFF),

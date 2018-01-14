@@ -7,7 +7,7 @@ from .choices import modes
 from .choices import sensor_selection
 
 # Create your views here.
-def index(request):
+def index(request, noscript=False):
     thermostats = Thermostat.objects.all()
     mode_choices = (mode[0] for mode in modes.CHOICES)
     return render(
@@ -17,7 +17,8 @@ def index(request):
                 "thermostats": thermostats,
                 "choices": {
                     "modes": mode_choices,
-                }
+                },
+                "noscript": noscript
             }
         )
 

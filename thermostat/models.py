@@ -114,6 +114,9 @@ class Thermostat(models.Model):
     def programmed(self):
         return self.mode == modes.PROGRAM
 
+    def always_off(self):
+        return self.mode == modes.ALWAYS_OFF
+
     def get_temperature(self):
         sensors = ThermostatSensors.objects.filter(thermostat=self)
         temps = list((ts.sensor.get_temperature() for ts in sensors))

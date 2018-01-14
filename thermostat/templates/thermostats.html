@@ -50,7 +50,6 @@
                           </h3>
                     </div>
                   </div>
-
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -73,6 +72,7 @@
                         </div>
                       </div>
                     </li>
+                    {% if not thermostat.always_off %}
                     <li class="list-group-item">
                       <div class="row">
                         <div class="col-sm-4">
@@ -111,7 +111,8 @@
                         </di>
                       </div>
                     </li>
-                  {% if not thermostat.program.active %}
+                  {% endif %}
+                  {% if not thermostat.program.active and not thermostat.always_off %}
                     <li class="list-group-item">
                         <div class="row">
                           <div class="col-sm-2">
@@ -144,19 +145,17 @@
                             </div>
                           </div>
                         </div>
-                      </li>
                       {% if thermostat.boost %}
-                        <li class="list-group-item">
                           <div class="row">
                             <div class="col-sm-4">
-                                <h4>Boost Remaining</h4>
+                                <h5>Boost Remaining</h5>
                             </div>
                             <div class="col-sm-8 text-right">
                                 <h4><span class="badge">{{ thermostat.get_boost_remaining }}</span></h4>
                             </div>
                           </div>
-                        </li>
                       {% endif %}
+                    </li>
                     {% endif %}
 
                     <li class="list-group-item">

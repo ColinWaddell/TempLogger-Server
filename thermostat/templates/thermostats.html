@@ -228,13 +228,13 @@
                           >
                             <td>{{ action.on }}</td>
                             <td>{{ action.off }}</td>
-                            <td class="text-center">{{ action.target }}</td>
+                            <td class="text-center">{{ action.target }}&deg;C</td>
                           </tr>
                           {% endfor %}
                         </table>
                         <div class="row">
-                          <div class="col-sm-3"><b>Scheduled:</b></div>
-                          <div class="col-sm-9 text-right">{{ thermostat.program.day }}</div>
+                          <div class="col-sm-2"><b>Scheduled:</b></div>
+                          <div class="col-sm-10 text-right">{{ thermostat.program.day }}</div>
                         </div>
                       </li>
                       {% endif %}

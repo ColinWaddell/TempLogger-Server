@@ -26,7 +26,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                   <div class="row">
-                    <div class="col-xs-7">
+                    <div class="col-sm-7">
                       <h2>
                         {{ thermostat.name }}&nbsp;
                         {% if thermostat.on %}
@@ -34,7 +34,7 @@
                         {% endif %}
                       </h2>
                     </div>
-                    <div class="col-xs-5 text-right">
+                    <div class="col-sm-5 text-right">
                         <h3>
                           <span 
                             class="
@@ -55,10 +55,10 @@
                 <ul class="list-group">
                     <li class="list-group-item">
                       <div class="row">
-                        <div class="col-xs-2">
+                        <div class="col-sm-2">
                           <h4>Mode</h4>
                         </div>
-                        <div class="col-xs-10 text-right">
+                        <div class="col-sm-10 text-right">
                           <div class="btn-group" role="group" aria-label="Available Modes">
                             {% for mode in choices.modes %}
                               <a type="button" 
@@ -75,10 +75,10 @@
                     </li>
                     <li class="list-group-item">
                       <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-sm-4">
                           <h4>Target</h4>
                         </div>
-                        <di class="col-xs-8">
+                        <di class="col-sm-8">
                           <div class="input-group">
                             <div class="input-group-btn">
                               <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id -5 %}">
@@ -111,12 +111,13 @@
                         </di>
                       </div>
                     </li>
+                  {% if not thermostat.program.active %}
                     <li class="list-group-item">
                         <div class="row">
-                          <div class="col-xs-2">
+                          <div class="col-sm-2">
                             <h4>Boost</h4>
                           </div>
-                          <div class="col-xs-10 text-right">
+                          <div class="col-sm-10 text-right">
                             <div class="btn-group" role="group" aria-label="Available Modes">
                                 <a type="button" 
                                     class="btn btn-default"
@@ -134,22 +135,28 @@
                                     class="btn btn-default"
                                     href="{% url 'thermostat:boost' thermostat.id 4 %}"
                                 >4 Hours</a>
+                                {% if thermostat.boost %}
+                                  <a type="button" 
+                                    class="btn btn-danger"
+                                    href="{% url 'thermostat:boost' thermostat.id 0 %}"
+                                  >Off</a>
+                                {% endif %}
                             </div>
                           </div>
                         </div>
                       </li>
-                    {% if thermostat.boost %}
-                      <li class="list-group-item">
-                        <div class="row">
-                          <div class="col-xs-4">
-                              <h4>Boost Remaining</h4>
+                      {% if thermostat.boost %}
+                        <li class="list-group-item">
+                          <div class="row">
+                            <div class="col-sm-4">
+                                <h4>Boost Remaining</h4>
+                            </div>
+                            <div class="col-sm-8 text-right">
+                                <h4><span class="badge">{{ thermostat.get_boost_remaining }}</span></h4>
+                            </div>
                           </div>
-                          <div class="col-xs-8 text-right">
-                              <h4><span class="badge">{{ thermostat.get_boost_remaining }}</span></h4>
-                          </div>
-                        </div>
-
-                      </li>
+                        </li>
+                      {% endif %}
                     {% endif %}
 
                     <li class="list-group-item">
@@ -167,10 +174,10 @@
                       </table>
                       {% if thermostat.thermostatsensors_set.count > 1%}
                       <div class="row">
-                        <div class="col-xs-9">
+                        <div class="col-sm-9">
                             <b>{{thermostat.sensor_selection}}: </b>
                         </div>
-                        <div class="col-xs-3 text-right">
+                        <div class="col-sm-3 text-right">
                             {{ thermostat.get_temperature }}&deg;C
                         </div>
                       </div>
@@ -206,8 +213,8 @@
                           {% endfor %}
                         </table>
                         <div class="row">
-                          <div class="col-xs-3"><b>Scheduled:</b></div>
-                          <div class="col-xs-9 text-right">{{ thermostat.program.day }}</div>
+                          <div class="col-sm-3"><b>Scheduled:</b></div>
+                          <div class="col-sm-9 text-right">{{ thermostat.program.day }}</div>
                         </div>
                       </li>
                       {% endif %}

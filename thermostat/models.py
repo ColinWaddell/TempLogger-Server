@@ -107,6 +107,8 @@ class Thermostat(models.Model):
 
     def set_mode(self, mode):
         self.mode = mode
+        if not mode==modes.PROGRAM:
+            self.program.deactivate()
         self.save()
 
     def programmed(self):

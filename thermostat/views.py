@@ -9,6 +9,7 @@ from .choices import sensor_selection
 # Create your views here.
 def index(request, noscript=False):
     thermostats = Thermostat.objects.all()
+    _ = [thermostat.update() for thermostat in thermostats]
     mode_choices = (mode[0] for mode in modes.CHOICES)
     return render(
             request, 
@@ -26,21 +27,18 @@ def index(request, noscript=False):
 def mode(request, thermostat_id, mode):
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.set_mode(mode)
-    thermostat.update()
     return index(request)
 
 
 def jog_target(request, thermostat_id, delta):
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.jog_target(int(delta))
-    thermostat.update()
     return index(request)
 
 
 def boost(request, thermostat_id, hours):
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.set_boost(int(hours))
-    thermostat.update()
     return index(request)
 
 def status(request):

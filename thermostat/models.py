@@ -1,19 +1,20 @@
+from math import floor
 from datetime import time
 from django.utils import timezone
 from django.db import models
-from multiselectfield import MultiSelectField
+from .choices.multiselect import MultiSelectCustomField
 from .choices import modes
 from .choices import devices
 from .choices import weekdays
 from .choices import sensor_selection
-from .programs import Programs
+from .programs import Programs, SWITCH_OFF, SWITCH_TEST, SWITCH_IGNORE, SWITCH_BOOST
 from log.models import TemperatureSensor
 
 
 class Program(models.Model):
     name = models.CharField(max_length=200)
     active = models.BooleanField(default=False)
-    day = MultiSelectField(
+    day = MultiSelectCustomField(
         choices=weekdays.CHOICES,
         default=weekdays.DEFAULT,
         max_choices=7
@@ -46,7 +47,7 @@ class ProgramAction(models.Model):
     target = models.FloatField(default=21.0)
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
 
-    def active_time(self, days=None):
+    def active_time(self):
         # Test time
         midnight = time(0, 0)
         on = self.on if not self.on == midnight else time (0, 0, 1)
@@ -73,10 +74,43 @@ class Thermostat(models.Model):
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, blank=True)
     target = models.FloatField(default=21.0)
     boost = models.IntegerField(default=0)
+    boost_start = models.DateTimeField(blank=True, null=True)
 
     def set_target(self, temp_c):
         self.target = temp_c
         self.save()
+
+    def jog_target(self, delta):
+        self.target = self.target + delta
+        self.save
+
+    def get_boost_remaining(self):
+        now = timezone.now()
+        then = self.boost_start + timezone.timedelta(hours=self.boost)
+        diff = then - now
+        seconds = diff.total_seconds()
+        hours = floor(seconds / 60 / 60)
+        minutes = seconds % 60
+        if hours:
+            return "%d hour%s %d minutes" % (
+                hours, 
+                "s" if hours > 1 else "",
+                minutes
+            )
+        else:
+            return "%d minutes" % (minutes)
+
+    def set_boost(self, hours):
+        self.boost = hours
+        self.boost_start = timezone.now()
+        self.save()
+
+    def set_mode(self, mode):
+        self.mode = mode
+        self.save()
+
+    def programmed(self):
+        return self.mode == modes.PROGRAM
 
     def get_temperature(self):
         sensors = ThermostatSensors.objects.filter(thermostat=self)
@@ -88,7 +122,18 @@ class Thermostat(models.Model):
         return ProgramAction.objects.filter(program=self.program)
 
     def update(self):
-        Programs[self.mode](self)
+
+        test = self._boost_test()
+        if  test == SWITCH_IGNORE:
+            test = Programs[self.mode](self)
+
+        if test == SWITCH_OFF:
+            self.switch_off()
+        elif test == SWITCH_TEST:
+            self.test()
+        elif test == SWITCH_IGNORE:
+            pass
+
         self.save()
 
     def too_warm(self):
@@ -108,6 +153,18 @@ class Thermostat(models.Model):
 
     def test(self):
         self.switch_off() if self.too_warm() else self.switch_on()
+
+    def _boost_test(self):
+        if self.boost:
+            now = timezone.now()
+            then = self.boost_start + timezone.timedelta(hours=self.boost) 
+            if now < then:
+                return SWITCH_TEST
+            else:
+                # boost needs deactivated
+                self.boost = 0.0
+        return SWITCH_IGNORE
+
 
     def __str__(self):
         return self.name

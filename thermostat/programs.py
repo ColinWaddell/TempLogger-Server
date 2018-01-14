@@ -1,12 +1,17 @@
 from .choices import modes
+from django.utils import timezone
 
+SWITCH_OFF = 0
+SWITCH_TEST = 1
+SWITCH_IGNORE = 2
+SWITCH_BOOST = 3
 
-def _always_active(thermostat):
-    thermostat.test()
+def _ALWAYS_THERMO(thermostat):
+    return SWITCH_TEST
 
 
 def _always_off(thermostat):
-    thermostat.switch_off()
+    return SWITCH_OFF
 
 
 def _program(thermostat):
@@ -14,20 +19,24 @@ def _program(thermostat):
 
     for action in thermostat.get_actions():
         if program.active_day and action.active_time():
-            thermostat.test()
             if not program.active:
+                # Should only set the thermostat once
+                # so if someone fiddles with the target
+                # whilst the program's active their
+                # chosen temp remains the same
                 program.activate()
                 thermostat.set_target(action.target)
-                return
+                thermostat.set_boost(0.0)
+            return SWITCH_TEST
         else:
             if program.active:
                 program.deactivate()
-                thermostat.switch_off()
-                return
+
+    return SWITCH_OFF
 
 
 Programs = {
-    modes.ALWAYS_ACTIVE: _always_active,
+    modes.ALWAYS_THERMO: _ALWAYS_THERMO,
     modes.ALWAYS_OFF: _always_off,
-    modes.PROGRAM: _program
+    modes.PROGRAM: _program,
 }

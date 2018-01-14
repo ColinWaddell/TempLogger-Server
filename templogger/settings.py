@@ -58,7 +58,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'log/templates'
+            'log/templates',
+            'thermostat/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -126,4 +127,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "log/static"),
+    os.path.join(BASE_DIR, "thermostat/static"),
 ]

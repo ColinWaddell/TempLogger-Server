@@ -27,10 +27,9 @@ class Program(models.Model):
         today = timezone.now().isoweekday() - 1
         try:
             _ = self.day.index(str(pow(2, today)))
+            return True
         except ValueError:
             return False
-        finally:
-            return True
 
     def activate(self):
         self.active = True
@@ -127,7 +126,6 @@ class Thermostat(models.Model):
         return ProgramAction.objects.filter(program=self.program)
 
     def update(self):
-
         test = self._boost_test()
         if  test == SWITCH_IGNORE:
             test = Programs[self.mode](self)

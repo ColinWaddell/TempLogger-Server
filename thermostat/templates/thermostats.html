@@ -110,7 +110,9 @@
                               <input
                                 class="
                                 form-control text-center 
-                                {% if thermostat.too_warm %}
+                                {% if thermostat.programmed and not thermostat.program.active %}
+                                btn-default
+                                {% elif thermostat.too_warm %}
                                 btn-info
                                 {% else %}
                                 btn-danger

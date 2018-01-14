@@ -18,7 +18,7 @@ def _program(thermostat):
     program = thermostat.program
 
     for action in thermostat.get_actions():
-        if program.active_day and action.active_time():
+        if program.active_day() and action.active_time():
             if not program.active:
                 # Should only set the thermostat once
                 # so if someone fiddles with the target
@@ -29,8 +29,7 @@ def _program(thermostat):
                 thermostat.set_boost(0.0)
             return SWITCH_TEST
         else:
-            if program.active:
-                program.deactivate()
+            program.deactivate()
 
     return SWITCH_OFF
 

@@ -3,7 +3,8 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render
 from json import dumps
 from django.http import HttpResponse
-from .models import TemperatureSensor, Reading
+from .models import Reading
+from .models import TemperatureSensor
 from django.core.exceptions import ObjectDoesNotExist
 from .utilities import max_weeks
 
@@ -12,7 +13,7 @@ def index(request, weeks_ago=0):
         "ago": weeks_ago,
         "max": range(1, max_weeks() + 1)
     }
-    return render(request, 'index.html', {"weeks": weeks})
+    return render(request, 'log.html', {"weeks": weeks})
 
 
 def get(request, weeks_ago=0):

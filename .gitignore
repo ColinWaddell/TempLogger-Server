@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 db.sqlite3
 log/migrations/
+thermostat/migrations/
 static/
 
 # C extensions

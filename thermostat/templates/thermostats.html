@@ -1,0 +1,251 @@
+{% load static %}
+{% if not noscript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
+    <title>Thermostats</title>
+    <script>
+      var x  = 0;
+      var reload_bg = function(){ 
+        var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+        var request = $.ajax({
+          url: root + '/thermostat/noscript',
+          dataType: "html"
+        })
+        .done(
+          function(data) {
+            $("body").html(data);
+            x = x + 1;
+            console.log(x)
+          }
+        )
+        setTimeout(reload_bg, 1000)
+      }
+      setTimeout(reload_bg, 1000)
+      </script>
+</head>
+<body>
+{% endif %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'thermostat:index' %}">WarmPi</a>
+          </div>
+        </div><!-- /.container-fluid -->
+      </nav>
+
+    <div class="container">
+      {% for thermostat in thermostats %}
+        <div class="row">
+          <div class="col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-sm-7">
+                      <h2>
+                        {{ thermostat.name }}&nbsp;
+                        {% if thermostat.on %}
+                          <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                        {% endif %}
+                      </h2>
+                    </div>
+                    <div class="col-sm-5 text-right">
+                        <h3>
+                          <span 
+                            class="
+                              alert
+                              {% if thermostat.too_warm %}
+                              alert-danger
+                              {% else %}
+                              alert-info
+                              {% endif %}
+                            ">
+                              {{ thermostat.get_temperature }}&deg;C
+                            </span>
+                          </h3>
+                    </div>
+                  </div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-2">
+                          <h4>Mode:</h4>
+                        </div>
+                        <div class="col-sm-10 text-right">
+                          <div class="btn-group" role="group" aria-label="Available Modes">
+                            {% for mode in choices.modes %}
+                              <a type="button" 
+                                  class="
+                                  btn btn-default
+                                  {% if mode == thermostat.mode %}btn-primary{% endif %}
+                                  "
+                                  href="{% url 'thermostat:mode' thermostat.id mode %}"
+                              >{{ mode }}</a>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    {% if not thermostat.always_off %}
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <h4>Target:</h4>
+                        </div>
+                        <di class="col-sm-8">
+                          <div class="input-group">
+                            <div class="input-group-btn">
+                              <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id -5 %}">
+                                  <span class="glyphicon glyphicon-backward"></span>
+                                </a>
+                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id -1 %}">
+                                  <span class="glyphicon glyphicon-triangle-left"></span>
+                                </a>
+                              </div> 
+                              <input
+                                class="
+                                form-control text-center 
+                                {% if thermostat.programmed and not thermostat.program.active %}
+                                btn-default
+                                {% elif thermostat.too_warm %}
+                                btn-info
+                                {% else %}
+                                btn-danger
+                                {% endif %}
+                                "
+                                value="{{ thermostat.target }}&deg;C"
+                              >
+                              <div class="input-group-btn">
+                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id 1 %}">
+                                  <span class="glyphicon glyphicon-triangle-right"></span>
+                                </a>
+                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id 5 %}">
+                                  <span class="glyphicon glyphicon-forward"></span>
+                                </a>
+                              </div> 
+                          </div>
+                        </di>
+                      </div>
+                    </li>
+                  {% endif %}
+                  {% if not thermostat.program.active and not thermostat.always_off %}
+                    <li class="list-group-item">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <h4>Boost</h4>
+                          </div>
+                          <div class="col-sm-10 text-right">
+                            <div class="btn-group" role="group" aria-label="Available Modes">
+                                <a type="button" 
+                                    class="btn btn-default"
+                                    href="{% url 'thermostat:boost' thermostat.id 1 %}"
+                                >1 Hour</a>
+                                <a type="button" 
+                                    class="btn btn-default"
+                                    href="{% url 'thermostat:boost' thermostat.id 2 %}"
+                                >2 Hours</a>
+                                <a type="button" 
+                                    class="btn btn-default"
+                                    href="{% url 'thermostat:boost' thermostat.id 3 %}"
+                                >3 Hours</a>
+                                <a type="button" 
+                                    class="btn btn-default"
+                                    href="{% url 'thermostat:boost' thermostat.id 4 %}"
+                                >4 Hours</a>
+                                {% if thermostat.boost %}
+                                  <a type="button" 
+                                    class="btn btn-danger"
+                                    href="{% url 'thermostat:boost' thermostat.id 0 %}"
+                                  >Off</a>
+                                {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      {% if thermostat.boost %}
+                          <div class="row">
+                            <div class="col-sm-4">
+                                <h5>Boost Remaining</h5>
+                            </div>
+                            <div class="col-sm-8 text-right">
+                                <h4><span class="badge">{{ thermostat.get_boost_remaining }}</span></h4>
+                            </div>
+                          </div>
+                      {% endif %}
+                    </li>
+                    {% endif %}
+
+                    <li class="list-group-item">
+                      <table class="table table-condensed table-striped table-bordered">
+                        <tr>
+                          <th>Sensor</th>
+                          <th class="text-right">Current Temperature</th>
+                        </tr>
+                        {% for thermsensor in thermostat.thermostatsensors_set.all %}
+                        <tr>
+                          <td>{{ thermsensor.sensor.name }}</td>
+                          <td class="text-right">{{ thermsensor.sensor.get_temperature }}&deg;C</td>
+                        </tr>
+                        {% endfor %}
+                      </table>
+                      {% if thermostat.thermostatsensors_set.count > 1%}
+                      <div class="row">
+                        <div class="col-sm-9">
+                            <b>{{thermostat.sensor_selection}}: </b>
+                        </div>
+                        <div class="col-sm-3 text-right">
+                            {{ thermostat.get_temperature }}&deg;C
+                        </div>
+                      </div>
+                      {% endif %}
+                    </li>
+
+                    {% if thermostat.programmed %}
+                    <li class="list-group-item">
+                        <h4>
+                          Timer: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;
+                          {% if thermostat.program.active %}
+                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                          {% else %}
+                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                          {% endif %}
+                        </h4>
+                        <table class="table table-condensed table-striped table-bordered">
+                          <tr>
+                            <th>On</th>
+                            <th>Off</th>
+                            <th class="text-center">Target</th>
+                          </tr>
+                          {% for action in thermostat.program.programaction_set.all %}
+                          <tr
+                            {% if action.active_time and thermostat.program.active_day %}
+                              class="warning"
+                            {% endif %}
+                          >
+                            <td>{{ action.on }}</td>
+                            <td>{{ action.off }}</td>
+                            <td class="text-center">{{ action.target }}&deg;C</td>
+                          </tr>
+                          {% endfor %}
+                        </table>
+                        <div class="row">
+                          <div class="col-sm-2"><b>Scheduled:</b></div>
+                          <div class="col-sm-10 text-right">{{ thermostat.program.day }}</div>
+                        </div>
+                      </li>
+                      {% endif %}
+                  </ul>
+                  <div class="panel-footer"><b>Updated: </b>{% now "jS F - H:i:s" %}</div>
+              </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+{% if not noscript %}
+</body>
+</html>
+{% endif %}

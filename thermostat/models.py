@@ -7,13 +7,14 @@ from .choices import modes
 from .choices import devices
 from .choices import weekdays
 from .choices import sensor_selection
-from .programs import Programs, SWITCH_OFF, SWITCH_TEST, SWITCH_IGNORE, SWITCH_BOOST
+from .programs import Programs, SWITCH_OFF, SWITCH_TEST, SWITCH_IGNORE, SWITCH_BOOST, SWITCH_PAUSED
 from log.models import TemperatureSensor
 
 
 class Program(models.Model):
     name = models.CharField(max_length=200)
     active = models.BooleanField(default=False)
+    paused = models.BooleanField(default=False)
     day = MultiSelectCustomField(
         choices=weekdays.CHOICES,
         default=weekdays.DEFAULT,
@@ -37,6 +38,16 @@ class Program(models.Model):
 
     def deactivate(self):
         self.active = False
+        self.save()
+
+    def pause(self):
+        print("pause")
+        self.paused = True
+        self.save()
+    
+    def unpause(self):
+        print("UNPUASE")
+        self.paused = False
         self.save()
             
 
@@ -67,7 +78,7 @@ class Thermostat(models.Model):
     name = models.CharField(max_length=200)
     enabled = models.BooleanField(default=True)
     on = models.BooleanField(default=False)
-    mode = models.CharField(max_length=50, choices=modes.CHOICES, default=modes.PROGRAM)
+    mode = models.CharField(max_length=50, choices=modes.CHOICES, default=modes.TIMER)
     sensor_selection = models.CharField(max_length=50, choices=sensor_selection.CHOICES, default=sensor_selection.LOWEST)
     device = models.CharField(max_length=50, choices=devices.CHOICES, default=devices.DUMMY)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, blank=True)
@@ -114,12 +125,18 @@ class Thermostat(models.Model):
 
     def set_mode(self, mode):
         self.mode = mode
-        if not mode==modes.PROGRAM:
+        if not mode==modes.TIMER:
             self.program.deactivate()
         self.save()
 
+    def program_active(self):
+        if not self.program.active_day():
+            return False
+        actions = self.get_actions()
+        return True in [act.active_time() for act in actions]
+
     def programmed(self):
-        return self.mode == modes.PROGRAM
+        return self.mode == modes.TIMER
 
     def always_off(self):
         return self.mode == modes.ALWAYS_OFF
@@ -142,6 +159,8 @@ class Thermostat(models.Model):
             self.switch_off()
         elif test == SWITCH_TEST:
             self.test()
+        elif test == SWITCH_PAUSED:
+            self.switch_off()
         elif test == SWITCH_IGNORE:
             pass
 
@@ -164,6 +183,28 @@ class Thermostat(models.Model):
 
     def test(self):
         self.switch_off() if self.too_warm() else self.switch_on()
+
+    def status_icon(self):
+        on = 'glyphicon-flash'
+        off = 'glyphicon-stop'
+        paused = 'glyphicon-pause'
+        program = 'glyphicon-play'
+        thermo_watching = 'glyphicon-eye-open'
+
+        if self.on:
+            return on
+
+        if self.mode==modes.ALWAYS_THERMO and self.too_warm():
+            return thermo_watching
+
+        print(self.program_active())
+        if self.mode==modes.TIMER and self.program_active():
+            if self.program.paused:
+                return paused
+            else:
+                return program
+
+        return off
 
     def _boost_test(self):
         if self.boost:

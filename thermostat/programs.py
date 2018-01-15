@@ -5,6 +5,7 @@ SWITCH_OFF = 0
 SWITCH_TEST = 1
 SWITCH_IGNORE = 2
 SWITCH_BOOST = 3
+SWITCH_PAUSED = 3
 
 def _ALWAYS_THERMO(thermostat):
     return SWITCH_TEST
@@ -14,8 +15,11 @@ def _always_off(thermostat):
     return SWITCH_OFF
 
 
-def _program(thermostat):
+def _timer(thermostat):
     program = thermostat.program
+    
+    if thermostat.program_active() and program.active and program.paused:
+        return SWITCH_PAUSED
 
     for action in thermostat.get_actions():
         if program.active_day() and action.active_time():
@@ -25,6 +29,7 @@ def _program(thermostat):
                 # whilst the program's active their
                 # chosen temp remains the same
                 program.activate()
+                program.unpause()
                 thermostat.set_target(action.target)
                 thermostat.set_boost(0.0)
             return SWITCH_TEST
@@ -37,5 +42,5 @@ def _program(thermostat):
 Programs = {
     modes.ALWAYS_THERMO: _ALWAYS_THERMO,
     modes.ALWAYS_OFF: _always_off,
-    modes.PROGRAM: _program,
+    modes.TIMER: _timer,
 }

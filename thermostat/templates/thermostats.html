@@ -48,9 +48,7 @@
                     <div class="col-sm-7">
                       <h2>
                         {{ thermostat.name }}&nbsp;
-                        {% if thermostat.on %}
-                          <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
-                        {% endif %}
+                        <span class="glyphicon {{ thermostat.status_icon }}" aria-hidden="true"></span>
                       </h2>
                     </div>
                     <div class="col-sm-5 text-right">
@@ -137,7 +135,7 @@
                     <li class="list-group-item">
                         <div class="row">
                           <div class="col-sm-2">
-                            <h4>Boost</h4>
+                            <h4>Boost:</h4>
                           </div>
                           <div class="col-sm-10 text-right">
                             <div class="btn-group" role="group" aria-label="Available Modes">
@@ -206,36 +204,63 @@
 
                     {% if thermostat.programmed %}
                     <li class="list-group-item">
-                        <h4>
-                          Timer: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;
-                          {% if thermostat.program.active %}
-                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                          {% else %}
-                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-                          {% endif %}
-                        </h4>
-                        <table class="table table-condensed table-striped table-bordered">
-                          <tr>
-                            <th>On</th>
-                            <th>Off</th>
-                            <th class="text-center">Target</th>
-                          </tr>
-                          {% for action in thermostat.program.programaction_set.all %}
-                          <tr
-                            {% if action.active_time and thermostat.program.active_day %}
-                              class="warning"
+                      <div class="row">
+                          <div class="col-xs-6">
+                            <h4>Timer: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;</h4>
+                          </div>
+                          <div class="col-xs-6 text-right">
+                            {% if thermostat.program_active %}
+                              <div class="btn-group" role="group" aria-label="...">
+                                <a
+                                  type="button" 
+                                  href="{% url 'thermostat:pause' thermostat.id %}"
+                                  class="btn btn-default btn-sm
+                                  {% if thermostat.program.paused %}
+                                    btn-primary
+                                  {% endif %}
+                                  ">
+                                    <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                                </a>
+                                <a
+                                  type="button"
+                                  href="{% url 'thermostat:unpause' thermostat.id %}"
+                                  class="btn btn-default btn-sm
+                                  {% if not thermostat.program.paused %}
+                                    btn-primary
+                                  {% endif %}
+                                  ">
+                                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                </a>
+                              </div>
                             {% endif %}
-                          >
-                            <td>{{ action.on }}</td>
-                            <td>{{ action.off }}</td>
-                            <td class="text-center">{{ action.target }}&deg;C</td>
-                          </tr>
-                          {% endfor %}
-                        </table>
-                        <div class="row">
-                          <div class="col-sm-2"><b>Scheduled:</b></div>
-                          <div class="col-sm-10 text-right">{{ thermostat.program.day }}</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <table class="table table-condensed table-striped table-bordered">
+                            <tr>
+                              <th>On</th>
+                              <th>Off</th>
+                              <th class="text-center">Target</th>
+                            </tr>
+                            {% for action in thermostat.program.programaction_set.all %}
+                            <tr
+                              {% if action.active_time and thermostat.program.active_day %}
+                                class="warning"
+                              {% endif %}
+                            >
+                              <td>{{ action.on }}</td>
+                              <td>{{ action.off }}</td>
+                              <td class="text-center">{{ action.target }}&deg;C</td>
+                            </tr>
+                            {% endfor %}
+                          </table>
+                          <div class="row">
+                            <div class="col-sm-2"><b>Scheduled:</b></div>
+                            <div class="col-sm-10 text-right">{{ thermostat.program.day }}</div>
+                          </div>
                         </div>
+                      </div>
                       </li>
                       {% endif %}
                   </ul>

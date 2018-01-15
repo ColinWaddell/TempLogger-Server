@@ -30,6 +30,21 @@ def mode(request, thermostat_id, mode):
     return index(request)
 
 
+def unpause(request, thermostat_id):
+    print("UNPAUSE")
+    thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
+    thermostat.program.unpause()
+    return index(request)
+
+
+def pause(request, thermostat_id):
+    print("PAUSE")
+    thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
+    thermostat.program.pause()
+    thermostat.switch_off()
+    return index(request)
+
+
 def jog_target(request, thermostat_id, delta):
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.jog_target(int(delta))

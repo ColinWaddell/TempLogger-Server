@@ -28,6 +28,7 @@
             left: 0;
         }
 
+        /* Pagination */
         #pages {
             padding-left: 20px;
         }
@@ -78,17 +79,17 @@
 
     function DrawGraph(data){
         nv.addGraph(function() {
-            var chart = nv.models.lineChart();
-            var fitScreen = false;
-            var width = 600;
-            var height = 300;
-            var zoom = 2;
-
-            chart.useInteractiveGuideline(true);
+            var chart = nv.models.multiBarChart()
+                .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                .rotateLabels(-15)      //Angle to rotate x-axis labels.
+                .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                .groupSpacing(0.2)    //Distance between each group of bars.
+                ;
+            
             chart.xAxis
-                .axisLabel('Date/Time')
+                .ticks(7)
                 .tickFormat(function(d) { 
-                    return d3.time.format('%b %d %H:%M')(new Date(d));
+                    return d3.time.format('%a %b %d %H:%M')(new Date(d));
                 })
 
             chart.yAxis
@@ -98,53 +99,12 @@
                     return d.toFixed(2) + "°C";
                 });
 
-            chart.forceY([15, 25]);
-            chart.interpolate("monotone");
-
+    
             d3.select('#chart1 svg')
-                .attr('perserveAspectRatio', 'xMinYMid')
-                .attr('width', width)
-                .attr('height', height)
-                .datum(data);
-
-            setChartViewBox();
-            resizeChart();
-
-            nv.utils.windowResize(resizeChart);
-
-            function setChartViewBox() {
-                var w = width * zoom,
-                    h = height * zoom;
-
-                chart
-                    .width(w)
-                    .height(h);
-
-                d3.select('#chart1 svg')
-                    .attr('viewBox', '0 0 ' + w + ' ' + h)
-                    .call(chart);
-            }
-
-            // This resize simply sets the SVG's dimensions, without a need to recall the chart code
-            // Resizing because of the viewbox and perserveAspectRatio settings
-            // This scales the interior of the chart unlike the above
-            function resizeChart() {
-                var container = d3.select('#chart1');
-                var svg = container.select('svg');
-
-                if (fitScreen) {
-                    // resize based on container's width AND HEIGHT
-                    var windowSize = nv.utils.windowSize();
-                    svg.attr("width", windowSize.width);
-                    svg.attr("height", windowSize.height);
-                } else {
-                    // resize based on container's width
-                    var aspect = chart.width() / chart.height();
-                    var targetWidth = parseInt(container.style('width'));
-                    svg.attr("width", targetWidth);
-                    svg.attr("height", Math.round(targetWidth / aspect));
-                }
-            }
+                .datum(data)
+                .call(chart);
+    
+            nv.utils.windowResize(chart.update);
             return chart;
         });
     }

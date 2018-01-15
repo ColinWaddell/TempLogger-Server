@@ -89,15 +89,17 @@ class Thermostat(models.Model):
         diff = then - now
         seconds = diff.total_seconds()
         hours = floor(seconds / 60 / 60)
-        minutes = (seconds / 60) % 60
+        minutes = floot((seconds / 60) % 60)
         if hours:
             return "%d hour%s %d minutes" % (
                 hours, 
                 "s" if hours > 1 else "",
                 minutes
             )
-        else:
-            return "%d minutes" % (minutes)
+        elif minutes:
+            return "%d minutes" % minutes
+        else: 
+            return "%d seconds" % seconds
 
     def set_boost(self, hours):
         self.boost = hours

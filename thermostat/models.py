@@ -81,7 +81,7 @@ class Thermostat(models.Model):
 
     def jog_target(self, delta):
         self.target = self.target + delta
-        self.save
+        self.save()
 
     def get_boost_remaining(self):
         now = timezone.now()
@@ -89,7 +89,7 @@ class Thermostat(models.Model):
         diff = then - now
         seconds = diff.total_seconds()
         hours = floor(seconds / 60 / 60)
-        minutes = seconds % 60
+        minutes = (seconds / 60) % 60
         if hours:
             return "%d hour%s %d minutes" % (
                 hours, 

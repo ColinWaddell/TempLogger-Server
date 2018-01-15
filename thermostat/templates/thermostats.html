@@ -8,8 +8,21 @@
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
     <script>
-      var x  = 0;
+      var x = 0;
+      var mouse_down = false;
+      var timeout = 1000;
+
+      $(document).mousedown(function(){
+          mouse_down = true;
+        })
+        .mouseup(function() {
+          mouse_down = false;
+      })
+
       var reload_bg = function(){ 
+        setTimeout(reload_bg, timeout)
+        if (mouse_down) return;
+
         var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
         var request = $.ajax({
           url: root + '/thermostat/noscript',
@@ -22,9 +35,8 @@
             console.log(x)
           }
         )
-        setTimeout(reload_bg, 1000)
       }
-      setTimeout(reload_bg, 1000)
+      setTimeout(reload_bg, timeout)
       </script>
 </head>
 <body>
@@ -246,7 +258,7 @@
                             {% for action in thermostat.program.programaction_set.all %}
                             <tr
                               {% if action.active_time and thermostat.program.active_day %}
-                                class="warning"
+                                class="{% if thermostat.program.paused %} info {% else %} warning {% endif %}"
                               {% endif %}
                             >
                               <td>{{ action.on }}</td>

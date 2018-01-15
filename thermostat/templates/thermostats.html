@@ -64,7 +64,7 @@
                               alert-info
                               {% endif %}
                             ">
-                              {{ thermostat.get_temperature }}&deg;C
+                              {{ thermostat.get_temperature|floatformat }}&deg;C
                             </span>
                           </h3>
                     </div>
@@ -188,7 +188,7 @@
                         {% for thermsensor in thermostat.thermostatsensors_set.all %}
                         <tr>
                           <td>{{ thermsensor.sensor.name }}</td>
-                          <td class="text-right">{{ thermsensor.sensor.get_temperature }}&deg;C</td>
+                          <td class="text-right">{{ thermsensor.sensor.get_temperature|floatformat }}&deg;C</td>
                         </tr>
                         {% endfor %}
                       </table>

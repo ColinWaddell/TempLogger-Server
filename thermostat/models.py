@@ -125,7 +125,8 @@ class Thermostat(models.Model):
     def set_mode(self, mode):
         self.mode = mode
         if not mode == modes.TIMER:
-            self.program.deactivate()
+            if self.program_active():
+                self.get_active_program().deactivate()
         self.save()
 
     def get_active_action(self):

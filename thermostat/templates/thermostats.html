@@ -143,7 +143,7 @@
                       </div>
                     </li>
                   {% endif %}
-                  {% if not thermostat.program.active and not thermostat.always_off %}
+                  {% if not thermostat.program_active and not thermostat.always_off %}
                     <li class="list-group-item">
                         <div class="row">
                           <div class="col-sm-2">
@@ -218,34 +218,44 @@
                     <li class="list-group-item">
                       <div class="row">
                           <div class="col-xs-6">
-                            <h4>Timer: <span class="text-muted">{{ thermostat.program.name }}</span>&nbsp;</h4>
+                            <h4>Timer:</h4>
                           </div>
                           <div class="col-xs-6 text-right">
                             {% if thermostat.program_active %}
-                              <div class="btn-group" role="group" aria-label="...">
+                            <div class="btn-group" role="group" aria-label="...">
                                 <a
-                                  type="button" 
-                                  href="{% url 'thermostat:pause' thermostat.id %}"
-                                  class="btn btn-default btn-sm
-                                  {% if thermostat.program.paused %}
+                                type="button" 
+                                href="{% url 'thermostat:pause' thermostat.id %}"
+                                class="btn btn-default btn-sm
+                                {% if thermostat.get_active_program.paused %}
                                     btn-primary
-                                  {% endif %}
-                                  ">
+                                {% endif %}
+                                ">
                                     <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                 </a>
                                 <a
-                                  type="button"
-                                  href="{% url 'thermostat:unpause' thermostat.id %}"
-                                  class="btn btn-default btn-sm
-                                  {% if not thermostat.program.paused %}
+                                type="button"
+                                href="{% url 'thermostat:unpause' thermostat.id %}"
+                                class="btn btn-default btn-sm
+                                {% if not thermostat.get_active_program.paused %}
                                     btn-primary
-                                  {% endif %}
-                                  ">
+                                {% endif %}
+                                ">
                                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                 </a>
-                              </div>
+                            </div>
                             {% endif %}
+                        </div>
+                      </div>
+                      {% for th_program in thermostat.thermostatprograms_set.all %}
+                      <div class="row">
+                          <div class="col-xs-6">
+                            <h4><span class="text-muted">{{ th_program.program.name }}</span>&nbsp;</h4>
                           </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-2"><b>Scheduled:</b></div>
+                        <div class="col-sm-10 text-right">{{ th_program.program.day }}</div>
                       </div>
                       <div class="row">
                         <div class="col-xs-12">
@@ -255,10 +265,12 @@
                               <th>Off</th>
                               <th class="text-center">Target</th>
                             </tr>
-                            {% for action in thermostat.program.programaction_set.all %}
+                            {% for action in th_program.program.programaction_set.all %}
                             <tr
-                              {% if action.active_time and thermostat.program.active_day %}
-                                class="{% if thermostat.program.paused %} info {% else %} warning {% endif %}"
+                              {% if action.id == thermostat.get_active_action.id %}
+                              {% if action.active_time and th_program.program.active_day %}
+                                class="{% if th_program.program.paused %} info {% else %} danger {% endif %}"
+                              {% endif %}
                               {% endif %}
                             >
                               <td>{{ action.on }}</td>
@@ -267,12 +279,9 @@
                             </tr>
                             {% endfor %}
                           </table>
-                          <div class="row">
-                            <div class="col-sm-2"><b>Scheduled:</b></div>
-                            <div class="col-sm-10 text-right">{{ thermostat.program.day }}</div>
-                          </div>
                         </div>
                       </div>
+                      {% endfor %}
                       </li>
                       {% endif %}
                   </ul>

@@ -81,7 +81,6 @@ class Thermostat(models.Model):
     mode = models.CharField(max_length=50, choices=modes.CHOICES, default=modes.TIMER)
     sensor_selection = models.CharField(max_length=50, choices=sensor_selection.CHOICES, default=sensor_selection.LOWEST)
     device = models.CharField(max_length=50, choices=devices.CHOICES, default=devices.DUMMY)
-    program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, blank=True)
     target = models.FloatField(default=21.0)
     boost = models.IntegerField(default=0)
     boost_start = models.DateTimeField(blank=True, null=True)
@@ -103,7 +102,7 @@ class Thermostat(models.Model):
         minutes = floor((seconds / 60) % 60)
         if hours:
             return "%d hour%s %d minutes" % (
-                hours, 
+                hours,
                 "s" if hours > 1 else "",
                 minutes
             )
@@ -112,7 +111,7 @@ class Thermostat(models.Model):
                 minutes,
                 "s" if minutes > 1 else ""
             )
-        else: 
+        else:
             return "%d second%s" % (
                 seconds,
                 "s" if seconds > 1 else ""
@@ -125,15 +124,32 @@ class Thermostat(models.Model):
 
     def set_mode(self, mode):
         self.mode = mode
-        if not mode==modes.TIMER:
+        if not mode == modes.TIMER:
             self.program.deactivate()
         self.save()
 
+    def get_active_action(self):
+        ts_programs = self.thermostatprograms_set.all()
+        active_today = [ts_program.program for ts_program in ts_programs
+                        if ts_program.program.active_day()]
+        if not len(active_today):
+            return None
+
+        active_now = [action for program in active_today
+                      for action in program.programaction_set.all()
+                      if action.active_time()]
+        try:
+            return active_now[0]
+        except IndexError:
+            return None
+
+    def get_active_program(self):
+        active_action = self.get_active_action()
+        return active_action.program
+
     def program_active(self):
-        if not self.program.active_day():
-            return False
-        actions = self.get_actions()
-        return True in [act.active_time() for act in actions]
+        active_actions = self.get_active_action()
+        return True if active_actions else False
 
     def programmed(self):
         return self.mode == modes.TIMER
@@ -152,7 +168,7 @@ class Thermostat(models.Model):
 
     def update(self):
         test = self._boost_test()
-        if  test == SWITCH_IGNORE:
+        if test == SWITCH_IGNORE:
             test = Programs[self.mode](self)
 
         if test == SWITCH_OFF:
@@ -194,12 +210,12 @@ class Thermostat(models.Model):
         if self.on:
             return on
 
-        if self.mode==modes.ALWAYS_THERMO and self.too_warm():
+        if self.mode == modes.ALWAYS_THERMO and self.too_warm():
             return thermo_watching
 
         print(self.program_active())
-        if self.mode==modes.TIMER and self.program_active():
-            if self.program.paused:
+        if self.mode == modes.TIMER and self.program_active():
+            if self.get_active_program().paused:
                 return paused
             else:
                 return program
@@ -217,7 +233,6 @@ class Thermostat(models.Model):
                 self.boost = 0.0
         return SWITCH_IGNORE
 
-
     def __str__(self):
         return self.name
 
@@ -225,3 +240,8 @@ class Thermostat(models.Model):
 class ThermostatSensors(models.Model):
     thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
     sensor = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE)
+
+
+class ThermostatPrograms(models.Model):
+    thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE)

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.forms import CheckboxSelectMultiple
-from .models import Thermostat, Program, ProgramAction, ThermostatSensors
+from .models import Thermostat, Program, ProgramAction
+from .models import ThermostatSensors, ThermostatPrograms
+
 
 class ProgramActionInline(admin.TabularInline):
     model = ProgramAction
@@ -15,8 +17,13 @@ class ProgramAdmin(admin.ModelAdmin):
     # readonly_fields = ('active', )
 
 
-class ThermostatSensorsinline(admin.TabularInline):
+class ThermostatSensorsInline(admin.TabularInline):
     model = ThermostatSensors
+    extra = 0
+
+
+class ThermostatProgramsInline(admin.TabularInline):
+    model = ThermostatPrograms
     extra = 0
 
 
@@ -26,10 +33,9 @@ class ThermostatAdmin(admin.ModelAdmin):
         'enabled',
         'mode',
         'device',
-        'program',
         'boost'
     )
-    inlines = [ThermostatSensorsinline]
+    inlines = [ThermostatProgramsInline, ThermostatSensorsInline]
     readonly_fields = ('on', )
 
 admin.site.register(Thermostat, ThermostatAdmin)

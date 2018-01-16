@@ -7,7 +7,8 @@ SWITCH_IGNORE = 2
 SWITCH_BOOST = 3
 SWITCH_PAUSED = 3
 
-def _ALWAYS_THERMO(thermostat):
+
+def _always_thermo(thermostat):
     return SWITCH_TEST
 
 
@@ -43,7 +44,7 @@ def _timer(thermostat):
 
 
 Programs = {
-    modes.ALWAYS_THERMO: _ALWAYS_THERMO,
+    modes.ALWAYS_THERMO: _always_thermo,
     modes.ALWAYS_OFF: _always_off,
     modes.TIMER: _timer,
 }

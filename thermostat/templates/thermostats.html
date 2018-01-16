@@ -7,7 +7,7 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
-    <script>
+    <!-- <script>
       var x = 0;
       var mouse_down = false;
       var timeout = 1000;
@@ -37,7 +37,7 @@
         )
       }
       setTimeout(reload_bg, timeout)
-      </script>
+      </script> -->
 </head>
 <body>
 {% endif %}
@@ -254,10 +254,6 @@
                           </div>
                       </div>
                       <div class="row">
-                        <div class="col-sm-2"><b>Scheduled:</b></div>
-                        <div class="col-sm-10 text-right">{{ th_program.program.day }}</div>
-                      </div>
-                      <div class="row">
                         <div class="col-xs-12">
                           <table class="table table-condensed table-striped table-bordered">
                             <tr>
@@ -281,9 +277,16 @@
                           </table>
                         </div>
                       </div>
-                      {% endfor %}
-                      </li>
+                      <div class="row">
+                        <div class="col-sm-2"><b>Scheduled:</b></div>
+                        <div class="col-sm-10 text-right">{{ th_program.program.day }}</div>
+                      </div>
+                      {% if not forloop.last %}
+                        <hr />
                       {% endif %}
+                      {% endfor %}
+                    </li>
+                    {% endif %}
                   </ul>
                   <div class="panel-footer"><b>Updated: </b>{% now "jS F - H:i:s" %}</div>
               </div>

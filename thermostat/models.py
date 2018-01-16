@@ -44,12 +44,12 @@ class Program(models.Model):
         print("pause")
         self.paused = True
         self.save()
-    
+
     def unpause(self):
         print("UNPUASE")
         self.paused = False
         self.save()
-            
+  
 
 class ProgramAction(models.Model):
     on = models.TimeField()
@@ -60,14 +60,14 @@ class ProgramAction(models.Model):
     def active_time(self):
         # Test time
         midnight = time(0, 0)
-        on = self.on if not self.on == midnight else time (0, 0, 1)
-        off = self.off  if not self.off == midnight else time (23, 59, 59)
+        on = self.on if not self.on == midnight else time(0, 0, 1)
+        off = self.off if not self.off == midnight else time(23, 59, 59)
         roll_over = False
         if on > off:
             _ = off
             off = on
             on = _
-            roll_over  = True
+            roll_over = True
         tz_now = timezone.now()
         now = time(tz_now.hour, tz_now.minute, tz_now.second)
 

@@ -1,21 +1,18 @@
+from thermostat.devices.dummy import DummyDevice
+from thermostat.devices.phat import PhatNO, PhatNC
+
 DUMMY = "Dummy"
-PHAT = "Automation pHAT"
+PHAT_NO = "Automation pHAT - NO Connection"
+PHAT_NC = "Automation pHAT - NC Connection"
 
 CHOICES = [
     (DUMMY, DUMMY),
-    (PHAT, PHAT),
+    (PHAT_NO, PHAT_NO),
+    (PHAT_NC, PHAT_NC),
 ]
-
-class DummyDevice():
-
-    def switch_on(self):
-        print("Dummy: Enabled")
-
-    def switch_off(self):
-        print("Dummy: Disabled")
-        
 
 HANDLERS = {
     DUMMY: DummyDevice,
-    PHAT: DummyDevice
+    PHAT_NO: PhatNO,
+    PHAT_NC: PhatNC
 }

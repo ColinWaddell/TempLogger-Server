@@ -1,16 +1,16 @@
-var staticPathPrefix = 'static',
+var staticPathPrefix = 'controls/static',
     proxyUrl = 'localhost:8000';
     
 module.exports = function (grunt) {
     grunt.initConfig({
         watch: {
-            files: 'sass/**/*.{scss,sass}',
+            files: staticPathPrefix + '/sass/**/*.{scss,sass}',
             tasks: ['sass']
         },
         sass: {
             dist: {
                 files: {
-                    'static/css/warmpi.css': 'sass/manifest.scss'
+                    'controls/static/css/warmpi.css': staticPathPrefix + '/sass/manifest.scss'
                 }
             }
         },

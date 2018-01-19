@@ -45,7 +45,7 @@
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'thermostat:index' %}">WarmPi</a>
+            <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
           </div>
         </div><!-- /.container-fluid -->
       </nav>
@@ -94,7 +94,7 @@
                                   btn btn-default
                                   {% if mode == thermostat.mode %}btn-primary{% endif %}
                                   "
-                                  href="{% url 'thermostat:mode' thermostat.id mode %}"
+                                  href="{% url 'controls:mode' thermostat.id mode %}"
                               >{{ mode }}</a>
                             {% endfor %}
                           </div>
@@ -110,10 +110,10 @@
                         <di class="col-sm-8">
                           <div class="input-group">
                             <div class="input-group-btn">
-                              <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id -5 %}">
+                              <a class="btn btn-default" href="{% url 'controls:jog_target' thermostat.id -5 %}">
                                   <span class="glyphicon glyphicon-backward"></span>
                                 </a>
-                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id -1 %}">
+                                <a class="btn btn-default" href="{% url 'controls:jog_target' thermostat.id -1 %}">
                                   <span class="glyphicon glyphicon-triangle-left"></span>
                                 </a>
                               </div> 
@@ -131,10 +131,10 @@
                                 value="{{ thermostat.target }}&deg;C"
                               >
                               <div class="input-group-btn">
-                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id 1 %}">
+                                <a class="btn btn-default" href="{% url 'controls:jog_target' thermostat.id 1 %}">
                                   <span class="glyphicon glyphicon-triangle-right"></span>
                                 </a>
-                                <a class="btn btn-default" href="{% url 'thermostat:jog_target' thermostat.id 5 %}">
+                                <a class="btn btn-default" href="{% url 'controls:jog_target' thermostat.id 5 %}">
                                   <span class="glyphicon glyphicon-forward"></span>
                                 </a>
                               </div> 
@@ -153,24 +153,24 @@
                             <div class="btn-group" role="group" aria-label="Available Modes">
                                 <a type="button" 
                                     class="btn btn-default {% if thermostat.boost == 1 %} btn-primary {% endif %}"
-                                    href="{% url 'thermostat:boost' thermostat.id 1 %}"
+                                    href="{% url 'controls:boost' thermostat.id 1 %}"
                                 >1 Hour</a>
                                 <a type="button" 
                                     class="btn btn-default {% if thermostat.boost == 2 %} btn-primary {% endif %}"
-                                    href="{% url 'thermostat:boost' thermostat.id 2 %}"
+                                    href="{% url 'controls:boost' thermostat.id 2 %}"
                                 >2 Hours</a>
                                 <a type="button" 
                                     class="btn btn-default {% if thermostat.boost == 3 %} btn-primary {% endif %}"
-                                    href="{% url 'thermostat:boost' thermostat.id 3 %}"
+                                    href="{% url 'controls:boost' thermostat.id 3 %}"
                                 >3 Hours</a>
                                 <a type="button" 
                                     class="btn btn-default {% if thermostat.boost == 4 %} btn-primary {% endif %}"
-                                    href="{% url 'thermostat:boost' thermostat.id 4 %}"
+                                    href="{% url 'controls:boost' thermostat.id 4 %}"
                                 >4 Hours</a>
                                 {% if thermostat.boost %}
                                   <a type="button" 
                                     class="btn btn-danger"
-                                    href="{% url 'thermostat:boost' thermostat.id 0 %}"
+                                    href="{% url 'controls:boost' thermostat.id 0 %}"
                                   >Off</a>
                                 {% endif %}
                             </div>
@@ -225,7 +225,7 @@
                             <div class="btn-group" role="group" aria-label="...">
                                 <a
                                 type="button" 
-                                href="{% url 'thermostat:pause' thermostat.id %}"
+                                href="{% url 'controls:pause' thermostat.id %}"
                                 class="btn btn-default btn-sm
                                 {% if thermostat.get_active_program.paused %}
                                     btn-primary
@@ -235,7 +235,7 @@
                                 </a>
                                 <a
                                 type="button"
-                                href="{% url 'thermostat:unpause' thermostat.id %}"
+                                href="{% url 'controls:unpause' thermostat.id %}"
                                 class="btn btn-default btn-sm
                                 {% if not thermostat.get_active_program.paused %}
                                     btn-primary

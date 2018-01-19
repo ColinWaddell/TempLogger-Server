@@ -65,7 +65,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             'log/templates',
-            'thermostat/templates',
+            'controls/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {

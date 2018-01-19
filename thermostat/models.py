@@ -7,6 +7,7 @@ from .choices import modes
 from .choices import devices
 from .choices import weekdays
 from .choices import sensor_selection
+from . import events
 from .programs import Programs, SWITCH_OFF, SWITCH_TEST, SWITCH_IGNORE, SWITCH_BOOST, SWITCH_PAUSED
 from log.models import TemperatureSensor
 
@@ -90,8 +91,7 @@ class Thermostat(models.Model):
         self.save()
 
     def jog_target(self, delta):
-        self.target = self.target + delta
-        self.save()
+        set_target(self.target + delta)
 
     def get_boost_remaining(self):
         now = timezone.now()
@@ -189,14 +189,21 @@ class Thermostat(models.Model):
     def switch_on(self):
         device = devices.HANDLERS[self.device]()
         device.switch_on()
+        # if on's about to change log_event
         self.on = True
         self.save()
 
     def switch_off(self):
         dev = devices.HANDLERS[self.device]()
         dev.switch_off()
+        # if on's about to change log_event
         self.on = False
         self.save()
+
+    def log_event(self, event):
+        te = ThermostatEvent(
+
+        )
 
     def test(self):
         self.switch_off() if self.too_warm() else self.switch_on()
@@ -246,3 +253,9 @@ class ThermostatSensors(models.Model):
 class ThermostatPrograms(models.Model):
     thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
+
+class ThermostatEvent(models.Model):
+    datetime = models.DateTimeField('date published')
+    event = models.CharField(max_length=50, choices=events.CHOICES, default=events.OFF)
+    thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
+    temperature_c = models.FloatField(blank=True, null=True, default=0.0)

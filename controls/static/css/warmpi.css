@@ -7297,4 +7297,8 @@ a.text-dark:hover, a.text-dark:focus {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+.current-temp {
+  font-size: 20pt;
+  line-height: 20pt; }
+
 /*# sourceMappingURL=warmpi.css.map */

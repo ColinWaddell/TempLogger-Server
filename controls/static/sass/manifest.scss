@@ -1,2 +1,7 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap";
-@import 'glyphicons'
+@import 'glyphicons';
+
+.current-temp{
+    font-size: 20pt;
+    line-height: 20pt;
+}

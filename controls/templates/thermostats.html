@@ -41,15 +41,10 @@
 </head>
 <body>
 {% endif %}
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
-        </div>
-      </div><!-- /.container-fluid -->
+    <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
     </nav>
-
+    <br />
     <div class="container">
       {% for thermostat in thermostats %}
         <div class="row justify-content-md-center">
@@ -57,26 +52,25 @@
             <div class="card">
                 <div class="card-header">
                   <div class="row">
-                    <div class="col-sm-7">
-                      <h2>
+                    <div class="col-sm-9">
+                      <h1 class="card-title">
                         {{ thermostat.name }}&nbsp;
                         <span class="glyphicon {{ thermostat.status_icon }}" aria-hidden="true"></span>
-                      </h2>
+                      </h1>
                     </div>
-                    <div class="col-sm-5 text-right">
-                        <h2>
-                          <span 
-                            class="
-                              alert
-                              {% if thermostat.too_warm %}
-                              alert-danger
-                              {% else %}
-                              alert-info
-                              {% endif %}
-                            ">
-                              {{ thermostat.get_temperature|floatformat }}&deg;C
-                            </span>
-                          </h2>
+                    <div class="col-sm-3 text-right">
+                      <div
+                        role="alert" 
+                        class="
+                          alert text-center current-temp
+                          {% if thermostat.too_warm %}
+                          alert-danger
+                          {% else %}
+                          alert-info
+                          {% endif %}
+                        ">
+                            {{ thermostat.get_temperature|floatformat }}&deg;C
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -269,8 +263,9 @@
                         </table>
 
                       <div class="row">
-                        <div class="col-sm-3"><b>Scheduled:</b></div>
-                        <div class="col-sm-9 text-right">{{ th_program.program.day }}</div>
+                        <div class="col-sm-3"><b>Scheduled: </b></div>
+                        <div class="col-sm-9 text-right"><span class="text-muted">{{ th_program.program.day }}</span></div>
+                        </div>
                       </div>
                       {% if not forloop.last %}
                         <hr />

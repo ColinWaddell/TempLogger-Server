@@ -25,12 +25,13 @@ def events(request, weeks_ago=0):
             {
                 "x": event.datetime.strftime("%Y/%m/%d %H:%M:%S"),
                 "y": event.target if event.event==SET else 0.0,
-                "info": "Setting Thermostat" if event.event==SET else "Disabling Thermostat"
             }
             for event in events
         ]
         logs.append({
             "key": thermostat.name,
-            "values": list(values)
+            "values": list(values),
+            "classed": "thermostat",
+            "area": True,
         })
     return HttpResponse(dumps(logs))

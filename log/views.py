@@ -35,18 +35,17 @@ def get(request, weeks_ago=0):
         values = [
             {
                 "x": reading.datetime.strftime("%Y/%m/%d %H:%M:%S"),
-                "y": reading.temperature_c
+                "y": reading.temperature_c,
             }
             for reading in readings
         ]
-
-        print(values)
 
         # Save
         logs.append(
             {
                 "key": sensor.name,
-                "values": list(values)
+                "values": list(values),
+                "classed": "reading"
             }
         )
     return HttpResponse(dumps(logs))

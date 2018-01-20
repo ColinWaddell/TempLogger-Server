@@ -21,6 +21,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^log/', include('log.urls')),
+    url(r'^thermostat/', include('thermostat.urls')),
     url(r'^controls/', include('controls.urls')),
     url(r'^$', RedirectView.as_view(url='controls', permanent=False), name='index')
 ]

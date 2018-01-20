@@ -76,15 +76,18 @@
 {% endif %}
 
 <script>
+    var chart = nv.models.lineChart();
+    var canvas = d3.select('#chart1 svg');
+    var graph_data = [];
 
-    function DrawGraph(data){
+    function DrawGraph(){
         nv.addGraph(function() {
-            var chart = nv.models.multiBarChart()
-                .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                .rotateLabels(-15)      //Angle to rotate x-axis labels.
-                .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                .groupSpacing(0.2)    //Distance between each group of bars.
-                ;
+            chart.margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                 .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                 .showYAxis(true)        //Show the y-axis
+                 .showXAxis(true)        //Show the x-axis
+;
             
             chart.xAxis
                 .ticks(7)
@@ -98,27 +101,28 @@
                 .tickFormat(function(d) { 
                     return d.toFixed(2) + "°C";
                 });
-
-    
-            d3.select('#chart1 svg')
-                .datum(data)
-                .call(chart);
     
             nv.utils.windowResize(chart.update);
             return chart;
         });
     }
 
-    d3.json("/log/get", function(data) {
-        // Tidy up iso to js-date
+    function UpdateGraph(data){
+            // Tidy up iso to js-date
         data.forEach(datum => {
             datum.values.forEach(val => {
                 val.x = new Date(val.x);
             })
+            graph_data.push(datum);
         })
-        DrawGraph(data);
-    });
+        
+        canvas.datum(graph_data).transition().duration(500).call(chart);
+        nv.utils.windowResize(chart.update);
+    }
 
+    DrawGraph();
+    d3.json("/log/get", UpdateGraph);
+    d3.json("/thermostat/events", UpdateGraph);
 </script>
 </body>
 </html>

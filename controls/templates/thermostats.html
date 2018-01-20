@@ -7,7 +7,7 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
-    <!-- <script>
+    <script>
       var x = 0;
       var mouse_down = false;
       var timeout = 1000;
@@ -25,7 +25,7 @@
 
         var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
         var request = $.ajax({
-          url: root + '/thermostat/noscript',
+          url: root + '/controls/noscript',
           dataType: "html"
         })
         .done(
@@ -37,7 +37,7 @@
         )
       }
       setTimeout(reload_bg, timeout)
-      </script> -->
+      </script>
 </head>
 <body>
 {% endif %}

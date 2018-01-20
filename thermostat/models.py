@@ -89,9 +89,10 @@ class Thermostat(models.Model):
     def set_target(self, temp_c):
         self.target = temp_c
         self.save()
+        self.log_event(events.SET)
 
     def jog_target(self, delta):
-        set_target(self.target + delta)
+        self.set_target(self.target + delta)
 
     def get_boost_remaining(self):
         now = timezone.now()
@@ -173,6 +174,8 @@ class Thermostat(models.Model):
             test = Programs[self.mode](self)
 
         if test == SWITCH_OFF:
+            if self.on:
+                self.log_event(events.OFF)
             self.switch_off()
         elif test == SWITCH_TEST:
             self.test()
@@ -189,21 +192,23 @@ class Thermostat(models.Model):
     def switch_on(self):
         device = devices.HANDLERS[self.device]()
         device.switch_on()
-        # if on's about to change log_event
         self.on = True
         self.save()
 
     def switch_off(self):
         dev = devices.HANDLERS[self.device]()
         dev.switch_off()
-        # if on's about to change log_event
         self.on = False
         self.save()
 
     def log_event(self, event):
         te = ThermostatEvent(
-
+            datetime=timezone.now(),
+            thermostat=self,
+            event=event,
+            target=self.target
         )
+        te.save()
 
     def test(self):
         self.switch_off() if self.too_warm() else self.switch_on()
@@ -258,4 +263,4 @@ class ThermostatEvent(models.Model):
     datetime = models.DateTimeField('date published')
     event = models.CharField(max_length=50, choices=events.CHOICES, default=events.OFF)
     thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
-    temperature_c = models.FloatField(blank=True, null=True, default=0.0)
+    target = models.FloatField(blank=True, null=True, default=0.0)

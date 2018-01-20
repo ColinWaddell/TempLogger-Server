@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from thermostat.models import Thermostat, ThermostatSensors, Program, ProgramAction
 from thermostat.choices import modes
 from thermostat.choices import sensor_selection
+from thermostat.events import OFF, SET
 
 
 def index(request, noscript=False):
@@ -33,6 +34,7 @@ def unpause(request, thermostat_id):
     print("UNPAUSE")
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.get_active_program().unpause()
+    thermostat.log_event(SET)
     return index(request)
 
 
@@ -40,6 +42,7 @@ def pause(request, thermostat_id):
     print("PAUSE")
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.get_active_program().pause()
+    thermostat.log_event(OFF)
     thermostat.switch_off()
     return index(request)
 

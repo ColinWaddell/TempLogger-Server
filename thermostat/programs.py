@@ -5,7 +5,7 @@ SWITCH_OFF = 0
 SWITCH_TEST = 1
 SWITCH_IGNORE = 2
 SWITCH_BOOST = 3
-SWITCH_PAUSED = 3
+SWITCH_PAUSED = 4
 
 
 def _always_thermo(thermostat):
@@ -22,7 +22,9 @@ def _timer(thermostat):
 
     for ts_program in ts_programs:
         program = ts_program.program
+        print("TEST")
         if thermostat.program_active() and program.active and program.paused:
+            print("PAAUSED")
             return SWITCH_PAUSED
 
         for action in program.programaction_set.all():

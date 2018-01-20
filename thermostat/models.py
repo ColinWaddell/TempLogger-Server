@@ -180,6 +180,11 @@ class Thermostat(models.Model):
         elif test == SWITCH_TEST:
             self.test()
         elif test == SWITCH_PAUSED:
+            print("pzzz")
+            print(self.on)
+            if self.on:
+                print("offfzz")
+                self.log_event(events.OFF)
             self.switch_off()
         elif test == SWITCH_IGNORE:
             pass
@@ -196,6 +201,7 @@ class Thermostat(models.Model):
         self.save()
 
     def switch_off(self):
+        print("SWITCHING OFF")
         dev = devices.HANDLERS[self.device]()
         dev.switch_off()
         self.on = False

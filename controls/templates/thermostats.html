@@ -7,7 +7,7 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
-    <script>
+    <!-- <script>
       var x = 0;
       var mouse_down = false;
       var timeout = 1000;
@@ -37,7 +37,7 @@
         )
       }
       setTimeout(reload_bg, timeout)
-      </script>
+      </script> -->
 </head>
 <body>
 {% endif %}
@@ -50,7 +50,7 @@
         <div class="row justify-content-md-center">
           <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" style="padding-bottom: 0">
                   <div class="row">
                     <div class="col-sm-9">
                       <h1 class="card-title">
@@ -210,9 +210,11 @@
 
                     {% if thermostat.programmed %}
                     <li class="list-group-item">
-                      <h4>Timer:</h4>
                       <div class="row">
-                          <div class="col-xs-6 text-right">
+                          <div class="col-sm-6">
+                              <h4>Timer:</h4>
+                          </div>
+                          <div class="col-sm-6 text-right">
                             {% if thermostat.program_active %}
                             <div class="btn-group" role="group" aria-label="...">
                                 <a
@@ -220,7 +222,7 @@
                                 href="{% url 'controls:pause' thermostat.id %}"
                                 class="btn btn-secondary btn-sm
                                 {% if thermostat.get_active_program.paused %}
-                                    btn-primary
+                                    btn-info
                                 {% endif %}
                                 ">
                                     <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
@@ -230,7 +232,7 @@
                                 href="{% url 'controls:unpause' thermostat.id %}"
                                 class="btn btn-secondary btn-sm
                                 {% if not thermostat.get_active_program.paused %}
-                                    btn-primary
+                                    btn-info
                                 {% endif %}
                                 ">
                                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
@@ -251,7 +253,7 @@
                           <tr
                             {% if action.id == thermostat.get_active_action.id %}
                             {% if action.active_time and th_program.program.active_day %}
-                              class="{% if th_program.program.paused %} info {% else %} danger {% endif %}"
+                              class="{% if th_program.program.paused %} alert-info {% else %} alert-danger {% endif %}"
                             {% endif %}
                             {% endif %}
                           >

@@ -27,7 +27,8 @@ module.exports = function (grunt) {
                 options: {
                     watchTask: true,
                     proxy: proxyUrl,
-                    online: true
+                    online: true,
+                    open: false
                 }
             }
         },

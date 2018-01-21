@@ -33,6 +33,7 @@ def _timer(thermostat):
                     # whilst the program's active their
                     # chosen temp remains the same
                     program.activate()
+                    print("UNPASE")
                     program.unpause()
                     thermostat.set_target(action.target)
                     thermostat.set_boost(0.0)

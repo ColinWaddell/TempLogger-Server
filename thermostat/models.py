@@ -42,15 +42,13 @@ class Program(models.Model):
         self.save()
 
     def pause(self):
-        print("pause")
         self.paused = True
         self.save()
 
     def unpause(self):
-        print("UNPUASE")
         self.paused = False
         self.save()
-  
+
 
 class ProgramAction(models.Model):
     on = models.TimeField()
@@ -88,8 +86,8 @@ class Thermostat(models.Model):
 
     def set_target(self, temp_c):
         self.target = temp_c
-        self.save()
         self.log_event(events.SET)
+        self.save()
 
     def jog_target(self, delta):
         self.set_target(self.target + delta)
@@ -197,7 +195,6 @@ class Thermostat(models.Model):
         self.save()
 
     def switch_off(self):
-        print("SWITCHING OFF")
         dev = devices.HANDLERS[self.device]()
         dev.switch_off()
         self.on = False

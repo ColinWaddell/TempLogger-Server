@@ -7297,6 +7297,10 @@ a.text-dark:hover, a.text-dark:focus {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+.card-title {
+  margin-top: 5px;
+  margin-bottom: 0px; }
+
 .current-temp {
   font-size: 20pt;
   line-height: 20pt; }

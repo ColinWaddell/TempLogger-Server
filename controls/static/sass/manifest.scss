@@ -2,6 +2,11 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 @import 'glyphicons';
 
+.card-title {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
 .current-temp{
     font-size: 20pt;
     line-height: 20pt;

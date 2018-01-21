@@ -25,27 +25,23 @@ def _timer(thermostat):
         if thermostat.program_active() and program.active and program.paused:
             return SWITCH_PAUSED
 
+        deactivate = True
         for action in program.programaction_set.all():
             if action == active_action:
-                print(program.name)
-                print(action.on)
-                print("active?")
-                print(program.active)
                 if not program.active:
                     # Should only set the thermostat once
                     # so if someone fiddles with the target
                     # whilst the program's active their
                     # chosen temp remains the same
                     program.activate()
-                    print("UNPASE")
                     program.unpause()
                     thermostat.set_target(action.target)
                     thermostat.set_boost(0.0)
+                    deactivate = False
                 return SWITCH_TEST
-            else:
-                print("DEACTIVATING")
-                print(program.name)
-                program.deactivate()
+        # If no actions were active then deactivate
+        if deactivate:
+            program.deactivate()
 
     return SWITCH_OFF
 

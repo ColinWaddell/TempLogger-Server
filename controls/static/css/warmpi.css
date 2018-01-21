@@ -7298,8 +7298,11 @@ a.text-dark:hover, a.text-dark:focus {
   box-sizing: border-box; }
 
 .card-title {
-  margin-top: 5px;
+  margin-top: 4px;
   margin-bottom: 0px; }
+
+.alert {
+  margin-bottom: 10px; }
 
 .current-temp {
   font-size: 20pt;

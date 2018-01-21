@@ -27,6 +27,7 @@ def _timer(thermostat):
 
         for action in program.programaction_set.all():
             if action == active_action:
+                print(program.name)
                 print("active?")
                 print(program.active)
                 if not program.active:

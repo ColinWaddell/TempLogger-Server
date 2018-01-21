@@ -109,3 +109,4 @@ venv.bak/
 
 .sass-cache/
 node_modules/
+.vscode/

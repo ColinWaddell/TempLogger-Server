@@ -123,17 +123,9 @@
                                 </a>
                               </div> 
                               <input
-                                class="
-                                form-control text-center 
-                                {% if thermostat.programmed and not thermostat.program_active %}
-                                alert-secondary
-                                {% elif thermostat.too_warm %}
-                                alert-info
-                                {% else %}
-                                alert-danger
-                                {% endif %}
-                                "
+                                class="form-control text-center"
                                 value="{{ thermostat.target }}&deg;C"
+                                readonly
                               >
                               <div class="input-group-append">
                                 <a class="btn btn-secondary" href="{% url 'controls:jog_target' thermostat.id 1 %}">
@@ -264,7 +256,7 @@
                           <tr
                             {% if action.id == thermostat.get_active_action.id %}
                             {% if action.active_time and th_program.program.active_day %}
-                              class="{% if th_program.program.paused %} table-info {% else %} table-danger {% endif %}"
+                              class="{% if th_program.program.paused %} row-disabled {% else %} row-enabled {% endif %}"
                             {% endif %}
                             {% endif %}
                           >

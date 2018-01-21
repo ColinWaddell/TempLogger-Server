@@ -264,14 +264,13 @@
                           {% endfor %}
                         </table>
 
-                      <div class="row">
-                        <div class="col-sm-3"><b>Scheduled: </b></div>
-                        <div class="col-sm-9 text-right"><span class="text-muted">{{ th_program.program.day }}</span></div>
+                        <div class="row">
+                          <div class="col-sm-3"><b>Scheduled: </b></div>
+                          <div class="col-sm-9 text-right"><span class="text-muted">{{ th_program.program.day }}</span></div>
                         </div>
-                      </div>
-                      {% if not forloop.last %}
-                        <hr />
-                      {% endif %}
+                        {% if not forloop.last %}
+                          <hr />
+                        {% endif %}
                       {% endfor %}
                     </li>
                     {% endif %}
@@ -283,6 +282,7 @@
       {% endfor %}
     </div>
 {% if not noscript %}
+<br />
 </body>
 </html>
 {% endif %}

@@ -24,9 +24,6 @@ def index(request, noscript=False):
 def mode(request, thermostat_id, mode):
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     thermostat.set_mode(mode)
-    # Kludge for event log
-    if mode==modes.ALWAYS_THERMO:
-        thermostat.set_target(thermostat.target)
     return index(request)
 
 

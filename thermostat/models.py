@@ -174,14 +174,13 @@ class Thermostat(models.Model):
             test = Programs[self.mode](self)
 
         if test == SWITCH_OFF:
-            if self.on:
-                self.log_event(events.OFF)
+            self.log_event(events.OFF)
             self.switch_off()
         elif test == SWITCH_TEST:
+            self.log_event(events.SET)
             self.test()
         elif test == SWITCH_PAUSED:
-            if self.on:
-                self.log_event(events.OFF)
+            self.log_event(events.OFF)
             self.switch_off()
         elif test == SWITCH_IGNORE:
             pass
@@ -205,13 +204,22 @@ class Thermostat(models.Model):
         self.save()
 
     def log_event(self, event):
-        te = ThermostatEvent(
-            datetime=timezone.now(),
-            thermostat=self,
-            event=event,
-            target=self.target
-        )
-        te.save()
+        # Only log changes of thermostat control state
+        try:
+            last_te = ThermostatEvent.objects.filter(thermostat=self).order_by('-id')[0]
+            new_event = not last_te.event == event or \
+                        not last_te.target == self.target
+        except IndexError:
+            new_event = True
+
+        if new_event:
+            te = ThermostatEvent(
+                datetime=timezone.now(),
+                thermostat=self,
+                event=event,
+                target=self.target
+            )
+            te.save()
 
     def test(self):
         self.switch_off() if self.too_warm() else self.switch_on()

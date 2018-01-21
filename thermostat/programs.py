@@ -27,6 +27,8 @@ def _timer(thermostat):
 
         for action in program.programaction_set.all():
             if action == active_action:
+                print("active?")
+                print(program.active)
                 if not program.active:
                     # Should only set the thermostat once
                     # so if someone fiddles with the target

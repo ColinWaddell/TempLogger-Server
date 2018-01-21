@@ -7,56 +7,34 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
     <title>Thermostats</title>
-    <!-- <script>
-      var x = 0;
-      var mouse_down = false;
-      var timeout = 1000;
-
-      $(document).mousedown(function(){
-          mouse_down = true;
-        })
-        .mouseup(function() {
-          mouse_down = false;
-      })
-
-      var reload_bg = function(){ 
-        setTimeout(reload_bg, timeout)
-        if (mouse_down) return;
-
-        var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-        var request = $.ajax({
-          url: root + '/controls/noscript',
-          dataType: "html"
-        })
-        .done(
-          function(data) {
-            $("body").html(data);
-            x = x + 1;
-            console.log(x)
-          }
-        )
-      }
-      setTimeout(reload_bg, timeout)
-      </script> -->
 </head>
 <body>
-{% endif %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'log:index' %}">Log</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-          </li>
-        </ul>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'log:index' %}">Log</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+        </li>
+      </ul>
+      <div class="form-inline my-2 my-lg-0">
+        <a class="btn my-2 my-sm-0 btn-success" id="reload">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </a>
       </div>
-    </nav>
+    </div>
+  </nav>
 
     <br />
     <div class="container">
+{% endif %} <!-- no script -->
       {% for thermostat in thermostats %}
         <div class="row justify-content-lg-center">
           <div class="col-lg-8">
@@ -283,9 +261,49 @@
           </div>
         </div>
       {% endfor %}
-    </div>
 {% if not noscript %}
-<br />
+    </div>
+  <script>
+    var mouse_down = false;
+    var timeout = 1000;
+    var reload = true;
+
+    $('#reload').click(function(){
+      var disabled = "btn-outline-success"
+      $('#reload').toggleClass(disabled);
+      if ($('#reload').hasClass(disabled)){
+        reload = false;
+      }
+      else{
+        reload = true;
+        reload_bg();
+      }
+    })
+
+    $(document).mousedown(function(){
+        mouse_down = true;
+      })
+      .mouseup(function() {
+        mouse_down = false;
+    })
+
+    var reload_bg = function(){ 
+      if (reload) setTimeout(reload_bg, timeout);
+      if (mouse_down) return;
+
+      var root = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+      var request = $.ajax({
+        url: root + '/controls/noscript',
+        dataType: "html"
+      })
+      .done(
+        function(data) {
+          $(".container").html(data);
+        }
+      )
+    }
+    setTimeout(reload_bg, timeout)
+  </script>
 </body>
 </html>
 {% endif %}

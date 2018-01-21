@@ -43,6 +43,8 @@ def _timer(thermostat):
                     thermostat.set_boost(0.0)
                 return SWITCH_TEST
             else:
+                print("DEACTIVATING")
+                print(program.name)
                 program.deactivate()
 
     return SWITCH_OFF

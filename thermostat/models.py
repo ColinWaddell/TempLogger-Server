@@ -56,6 +56,9 @@ class ProgramAction(models.Model):
     target = models.FloatField(default=21.0)
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['on']
+
     def active_time(self):
         # Test time
         midnight = time(0, 0)
@@ -162,9 +165,6 @@ class Thermostat(models.Model):
         temps = list((ts.sensor.get_temperature() for ts in sensors))
         temp = sensor_selection.ROUTINES[self.sensor_selection](temps)
         return temp
-
-    def get_actions(self):
-        return ProgramAction.objects.filter(program=self.program)
 
     def update(self):
         test = self._boost_test()

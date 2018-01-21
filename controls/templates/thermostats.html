@@ -41,9 +41,20 @@
 </head>
 <body>
 {% endif %}
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="{% url 'controls:index' %}">WarmPi</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'log:index' %}">Log</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+          </li>
+        </ul>
+      </div>
     </nav>
+
     <br />
     <div class="container">
       {% for thermostat in thermostats %}
@@ -253,7 +264,7 @@
                           <tr
                             {% if action.id == thermostat.get_active_action.id %}
                             {% if action.active_time and th_program.program.active_day %}
-                              class="{% if th_program.program.paused %} alert-info {% else %} alert-danger {% endif %}"
+                              class="{% if th_program.program.paused %} table-info {% else %} table-danger {% endif %}"
                             {% endif %}
                             {% endif %}
                           >

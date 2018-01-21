@@ -22,9 +22,7 @@ def _timer(thermostat):
 
     for ts_program in ts_programs:
         program = ts_program.program
-        print("TEST")
         if thermostat.program_active() and program.active and program.paused:
-            print("PAAUSED")
             return SWITCH_PAUSED
 
         for action in program.programaction_set.all():

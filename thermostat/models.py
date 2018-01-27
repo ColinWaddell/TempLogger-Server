@@ -272,3 +272,7 @@ class ThermostatEvent(models.Model):
     event = models.CharField(max_length=50, choices=events.CHOICES, default=events.OFF)
     thermostat = models.ForeignKey(Thermostat, on_delete=models.CASCADE)
     target = models.FloatField(blank=True, null=True, default=0.0)
+
+    def next(self):
+        next_event = ThermostatEvent.get_next_by_datetime(self, thermostat=self.thermostat)
+        return next_event

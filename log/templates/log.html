@@ -28,7 +28,7 @@
             left: 0;
         }
         .thermostat {
-            stroke-dasharray: 5,5;
+            stroke-width: 0;
         }
         .reading {
             /* */
@@ -56,23 +56,23 @@
     <svg></svg>
 </div>
 
-{% if weeks.max %}
+{% if range.max %}
 <div id="pages">
     <p>
         <a 
             href="" 
             class="
                 week
-            {% if weeks.ago == 0 %}
+            {% if range.ago == 0 %}
                 strong
             {% endif %}
             ">This week </a>
-        {% for week in weeks.max %}
+        {% for week in range.max %}
             <a 
                 href=""
                 class="
                     week
-                {% if week == weeks.ago %}
+                {% if week == range.ago %}
                     strong
                 {% endif %}
                 ">-{{ week }}</a>
@@ -93,7 +93,7 @@
                  .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
                  .showYAxis(true)        //Show the y-axis
                  .showXAxis(true)        //Show the x-axis
-                 .interpolate("step-before") 
+                 .interpolate("step-after") 
                  .forceY([0, 30])
                 ;
             
@@ -116,7 +116,8 @@
     }
 
     function UpdateGraph(data){
-            // Tidy up iso to js-date
+        if (data==null) return;
+        // Tidy up iso to js-date
         data.forEach(datum => {
             datum.values.forEach(val => {
                 val.x = new Date(val.x);
@@ -129,8 +130,8 @@
     }
 
     DrawGraph();
-    d3.json("/log/get", UpdateGraph);
-    d3.json("/thermostat/events", UpdateGraph);
+    d3.json("/log/get/{{ range.units }}/{{ range.ago }}", UpdateGraph);
+    d3.json("/thermostat/events/{{ range.units }}/{{ range.ago }}", UpdateGraph);
 </script>
 </body>
 </html>

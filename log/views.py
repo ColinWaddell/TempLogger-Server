@@ -6,32 +6,39 @@ from django.http import HttpResponse
 from .models import Reading
 from .models import TemperatureSensor
 from django.core.exceptions import ObjectDoesNotExist
-from .utilities import max_weeks
+from .utilities import max_weeks, max_days
 
-def index(request, weeks_ago=0):
-    weeks = {
-        "ago": weeks_ago,
-        "max": range(1, max_weeks() + 1)
+def index(request, ago=0, units="weeks"):
+    log_range = {
+        "ago": ago,
+        "units": units,
     }
-    return render(request, 'log.html', {"weeks": weeks})
+    if units == "weeks":
+        log_range["max"] = range(1, max_weeks() + 1)
+    elif units == "days":
+        log_range["max"] = range(1, max_days() + 1)
+    return render(request, 'log.html', {"range": log_range})
 
 
-def get(request, weeks_ago=0):
+def get(request, units='weeks', ago=0):
+    # calculate the dates
+    if units == "weeks":
+        offset = 7
+    elif units == "days":
+        offset = 1
+    days_ago = offset*int(ago)
+    dt = timezone.now()  - timedelta(days=days_ago)
+    dt_next = dt - timedelta(days=days_ago+offset)
     logs = []
+
     sensors = TemperatureSensor.objects.all()
     for sensor in sensors:
-        # calculate the dates
-        days_ago = 7*int(weeks_ago)
-        dt = timezone.now()  - timedelta(days=days_ago)
-        dt_week = dt - timedelta(days=days_ago+7)
-
         # pull the recordings
         readings = Reading.objects.filter(
             sensor=sensor,
-            datetime__gte=dt_week,
+            datetime__gte=dt_next,
             datetime__lte=dt,
         )
-
         values = [
             {
                 "x": reading.datetime.strftime("%Y/%m/%d %H:%M:%S"),
@@ -39,7 +46,6 @@ def get(request, weeks_ago=0):
             }
             for reading in readings
         ]
-
         # Save
         logs.append(
             {

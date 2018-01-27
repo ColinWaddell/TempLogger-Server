@@ -5,7 +5,7 @@ var graph_data = [];
 function DrawGraph(chart_id){
     chart[chart_id] = nv.models.lineChart();
     nv.addGraph(function() {
-        chart[chart_id].margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+        chart[chart_id].margin({left: 60})  //Adjust chart margins to give the x-axis some breathing room.
              .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
              .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
              .showYAxis(true)        //Show the y-axis

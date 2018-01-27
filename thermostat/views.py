@@ -66,6 +66,6 @@ def events(request, thermostat_id, units="weeks", ago=0):
         "key": thermostat.name,
         "values": list(values),
         "classed": "thermostat",
-        "area": True,
+        "area": True
     })
     return HttpResponse(dumps(logs))

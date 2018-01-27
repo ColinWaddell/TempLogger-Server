@@ -16,7 +16,7 @@ function DrawGraph(chart_id){
         chart[chart_id].xAxis
             .tickFormat(function(d) { 
                 return d3.time.format('%a %H:%M')(new Date(d));
-            })
+            });
 
         chart[chart_id].yAxis
             .axisLabel('Temperature (°C)')

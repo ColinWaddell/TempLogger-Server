@@ -16,7 +16,8 @@ svg {
     left: 0;
 }
 .thermostat {
-    stroke-width: 0;
+    stroke-width: 0.5 !important;
+    fill-opacity: 0.2 !important;
 }
 .reading {
     /* */
@@ -35,4 +36,15 @@ a.week{
 
 a.week.strong{
     font-weight: bolder;
+}
+
+.nv-legend-text,
+.nv-axislabel,
+.nv-axisMaxMin text,
+.tick text {
+    fill: white;
+}
+
+.nvd3 .nv-axis line{
+    stroke: #3498DB;
 }

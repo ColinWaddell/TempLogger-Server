@@ -7310,4 +7310,8 @@ a.text-dark:hover, a.text-dark:focus {
 .row-disabled {
   background-color: #3498DB !important; }
 
+.log {
+  height: 300px;
+  display: block; }
+
 /*# sourceMappingURL=warmpi.css.map */

@@ -5,50 +5,11 @@
 <head>
     <meta charset="utf-8">
     <link href="{% static 'css/nv.d3.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/log.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'js/d3.min.js' %}" charset="utf-8"></script>
     <script src="{% static 'js/nv.d3.min.js' %}"></script>
+    <script src="{% static 'js/log.js' %}"></script>
     <title>Temperature Log</title>
-    
-    <style>
-        p, text {
-            font: 12px sans-serif;
-        }
-        svg {
-            display: block;
-        }
-        html, body, #chart1, svg {
-            margin: 0px;
-            padding: 0px;
-            height: 95%;
-            width: 100%;
-        }
-        #chartZoom {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .thermostat {
-            stroke-width: 0;
-        }
-        .reading {
-            /* */
-        }
-
-        /* Pagination */
-        #pages {
-            padding-left: 20px;
-        }
-
-        a.week{
-            padding-right: 10px;
-            text-decoration: none;
-            color: cornflowerblue;
-        }
-
-        a.week.strong{
-            font-weight: bolder;
-        }
-    </style>
 </head>
 <body>
 
@@ -82,56 +43,13 @@
 {% endif %}
 
 <script>
-    var chart = nv.models.lineChart();
-    var canvas = d3.select('#chart1 svg');
-    var graph_data = [];
-
-    function DrawGraph(){
-        nv.addGraph(function() {
-            chart.margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
-                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                 .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                 .showYAxis(true)        //Show the y-axis
-                 .showXAxis(true)        //Show the x-axis
-                 .interpolate("step-after") 
-                 .forceY([0, 30])
-                ;
-            
-            chart.xAxis
-                .ticks(7)
-                .tickFormat(function(d) { 
-                    return d3.time.format('%a %b %d %H:%M')(new Date(d));
-                })
-
-            chart.yAxis
-                .axisLabel('Temperature (°C)')
-                .ticks(10)
-                .tickFormat(function(d) { 
-                    return d.toFixed(2) + "°C";
-                });
-    
-            nv.utils.windowResize(chart.update);
-            return chart;
-        });
-    }
-
-    function UpdateGraph(data){
-        if (data==null) return;
-        // Tidy up iso to js-date
-        data.forEach(datum => {
-            datum.values.forEach(val => {
-                val.x = new Date(val.x);
-            })
-            graph_data.push(datum);
-        })
-        
-        canvas.datum(graph_data).transition().duration(500).call(chart);
-        nv.utils.windowResize(chart.update);
-    }
-
     DrawGraph();
-    d3.json("/log/get/{{ range.units }}/{{ range.ago }}", UpdateGraph);
-    d3.json("/thermostat/events/{{ range.units }}/{{ range.ago }}", UpdateGraph);
+    d3.json("/log/get/{{ range.units }}/{{ range.ago }}", 
+        data => UpdateGraph('#chart1 svg', data)
+    );
+    d3.json("/thermostat/events/{{ range.units }}/{{ range.ago }}",
+        data => UpdateGraph('#chart1 svg', data)
+    );
 </script>
 </body>
 </html>

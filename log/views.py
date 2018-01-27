@@ -5,6 +5,7 @@ from json import dumps
 from django.http import HttpResponse
 from .models import Reading
 from .models import TemperatureSensor
+from thermostat.models import Thermostat
 from django.core.exceptions import ObjectDoesNotExist
 from .utilities import max_weeks, max_days
 
@@ -20,7 +21,7 @@ def index(request, ago=0, units="weeks"):
     return render(request, 'log.html', {"range": log_range})
 
 
-def get(request, units='weeks', ago=0):
+def get(request, thermostat_id, units='weeks', ago=0):
     # calculate the dates
     if units == "weeks":
         offset = 7
@@ -31,8 +32,11 @@ def get(request, units='weeks', ago=0):
     dt_next = dt - timedelta(days=days_ago+offset)
     logs = []
 
-    sensors = TemperatureSensor.objects.all()
-    for sensor in sensors:
+    thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
+    th_sensors = thermostat.thermostatsensors_set.all()
+
+    for th_sensor in th_sensors:
+        sensor = th_sensor.sensor
         # pull the recordings
         readings = Reading.objects.filter(
             sensor=sensor,

@@ -6,6 +6,11 @@
     <link href="{% static 'css/warmpi.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
+    <link href="{% static 'css/nv.d3.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/log.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/d3.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/nv.d3.min.js' %}"></script>
+    <script src="{% static 'js/log.js' %}"></script>
     <title>Thermostats</title>
 </head>
 <body>
@@ -17,9 +22,6 @@
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'log:index' %}">Log</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
         </li>
@@ -165,6 +167,21 @@
                     {% endif %}
 
                     <li class="list-group-item">
+                        <div id="chart-{{ thermostat.id }}" class='with-transitions log'>
+                            <svg></svg>
+                        </div>
+                        <script>
+                            DrawGraph('#chart-{{ thermostat.id }}');
+                            d3.json("/log/get/{{ thermostat.id }}/days/0", 
+                                data => UpdateGraph('#chart-{{ thermostat.id }}', data)
+                            );
+                            d3.json("/thermostat/events/{{ thermostat.id }}/days/0",
+                                data => UpdateGraph('#chart-{{ thermostat.id }}', data)
+                            );
+                        </script>
+                    </li>
+
+                    <li class="list-group-item">
                       <table class="table table-condensed table-striped table-bordered">
                         <tr>
                           <th>Sensor</th>
@@ -302,7 +319,7 @@
         }
       )
     }
-    setTimeout(reload_bg, timeout)
+    // setTimeout(reload_bg, timeout)
   </script>
 </body>
 </html>

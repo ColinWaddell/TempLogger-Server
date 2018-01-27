@@ -276,3 +276,7 @@ class ThermostatEvent(models.Model):
     def next(self):
         next_event = ThermostatEvent.get_next_by_datetime(self, thermostat=self.thermostat)
         return next_event
+
+    def previous(self):
+        previous_event = ThermostatEvent.get_previous_by_datetime(self, thermostat=self.thermostat)
+        return previous_event

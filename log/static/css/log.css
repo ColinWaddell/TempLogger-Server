@@ -1,0 +1,38 @@
+p, text {
+    font: 12px sans-serif;
+}
+svg {
+    display: block;
+}
+#chart1, svg {
+    margin: 0px;
+    padding: 0px;
+    height: 95%;
+    width: 100%;
+}
+#chartZoom {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.thermostat {
+    stroke-width: 0;
+}
+.reading {
+    /* */
+}
+
+/* Pagination */
+#pages {
+    padding-left: 20px;
+}
+
+a.week{
+    padding-right: 10px;
+    text-decoration: none;
+    color: cornflowerblue;
+}
+
+a.week.strong{
+    font-weight: bolder;
+}

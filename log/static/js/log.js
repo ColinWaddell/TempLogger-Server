@@ -9,8 +9,7 @@ function DrawGraph(chart_id){
             .showLegend(true)
             .showYAxis(true)
             .showXAxis(true)
-            .tooltip.enabled(false)
-            ;
+            .tooltip.enabled(false);
         
         chart[chart_id].xAxis
             .tickPadding(20)

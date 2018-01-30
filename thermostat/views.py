@@ -17,7 +17,6 @@ def events(request, thermostat_id, units="weeks", ago=0):
     now = timezone.now()
     dt = now - timedelta(days=days_ago)
     dt_next = dt - timedelta(days=days_ago+offset)
-    logs = []
 
     thermostat = get_object_or_404(Thermostat, pk=thermostat_id)
     # pull the recordings
@@ -62,10 +61,10 @@ def events(request, thermostat_id, units="weeks", ago=0):
             }
         )
 
-    logs.append({
+    logs = [{
         "key": thermostat.name,
         "values": list(values),
         "classed": "thermostat",
         "area": True
-    })
+    }]
     return HttpResponse(dumps(logs))

@@ -45,6 +45,7 @@ a.week.strong{
     fill: white;
 }
 
+.nvd3 .nv-axis g path.domain,
 .nvd3 .nv-axis line{
-    stroke: #3498DB;
+    stroke: rgb(56, 73, 83);
 }

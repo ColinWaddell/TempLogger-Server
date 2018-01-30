@@ -171,13 +171,15 @@
                             <svg></svg>
                         </div>
                         <script>
+                          $( document ).ready(function() {
                             DrawGraph('#chart-{{ thermostat.id }}');
                             d3.json("/log/get/{{ thermostat.id }}/days/0", 
-                                data => UpdateGraph('#chart-{{ thermostat.id }}', data)
+                                data => UpdateGraph('#chart-{{ thermostat.id }}', data, false)
                             );
                             d3.json("/thermostat/events/{{ thermostat.id }}/days/0",
-                                data => UpdateGraph('#chart-{{ thermostat.id }}', data)
+                                data => UpdateGraph('#chart-{{ thermostat.id }}', data, true)
                             );
+                          });
                         </script>
                     </li>
 
